@@ -77,8 +77,10 @@ Conjecture~2 directly implies Conjecture~1.
 In the Euclidean setting, Eastwood--Norbury~\cite{EastwoodNorbury2001} proved C1 for $n = 4$ (with additional special families proved by \DJ okovi\'c~\cite{Djokovic2002}), Atiyah~\cite{Atiyah2001} proved C3 for $n = 3$, Mazur--Petrenko~\cite{MazurPetrenko2011} established algebraic reformulations and special-case bounds on C1--C3, and Bou~Khuzam--Johnson~\cite{BouKhuzamJohnson2014} established Euclidean C2 and C3 for $n = 4$.
 In October~2026, Eickhoff~\cite{Eickhoff2026} proved the asymptotic existence of arbitrarily large finite singular configurations ($D_n = 0$, hence refuting C1 and asymptotically C2) in planar Euclidean space via two-orbit dihedral families ($K = 2$), and established asymptotic hyperbolic singular configurations via small-scale transfer into the Beltrami--Klein ball (\cite[\S7]{Eickhoff2026}), while leaving open concrete small-$n$ bounds, explicit C2 counterexamples with $-1 < D_n < 0$, Conjecture~3, and whether additional orbit rows ($K > 2$) yield new mechanisms or lower concrete thresholds.
 Independently in October~2026, Akhtyamov~\cite{Akhtyamov2026} formalized a disproof of Euclidean Conjecture~1 in Lean~4 using a $46$-point helical 3D configuration via the unnormalized projective formulation of~\cite{MazurPetrenko2011} (which expresses C1 without defining the normalized determinant $D_n$ needed for C2 and C3).
+Also in October~2026, Tan and Zhang~\cite{TanZhang2026} announced that $\operatorname{Re} D_5 \ge 5/768$ for every five-point configuration (hence C1 holds for $n = 5$) and exhibited a planar integer five-point configuration violating Conjecture~3, certified by rational interval arithmetic, noting that five is the smallest cardinality at which C3 can fail.
+Their preprint predates the present work; our five-point witness in Section~\ref{sec:n5} was found without knowledge of it, and we make no priority claim for the failure of Euclidean C3.
 
-By contrast, our Lean-formalized theorems construct the normalized determinant $D_n(\mathbf{x})$ directly and provide the first disproof of Conjecture~3 at the sharp minimal $n = 5$ (planar and strictly non-coplanar), lower the Lean-certified 3D C1/C2 threshold from $n = 46$ down to $n = 36$, certify direct nonzero C2 counterexamples with $-1 < D_n < 0$ at $n = 57, 63$ (planar) and $n = 59$ (strictly non-coplanar), and establish the first Lean-certified disproofs of Hyperbolic Conjectures~1, 2, and~3 in $\Hy^3$:
+By contrast, our Lean-formalized theorems construct the normalized determinant $D_n(\mathbf{x})$ directly and provide a Lean~4 proof that Conjecture~3 fails at the minimal $n = 5$ (planar, and strictly non-coplanar; the planar failure was first announced in~\cite{TanZhang2026}), lower the Lean-certified 3D C1/C2 threshold from $n = 46$ down to $n = 36$, certify direct nonzero C2 counterexamples with $-1 < D_n < 0$ at $n = 57, 63$ (planar) and $n = 59$ (strictly non-coplanar), and establish the first Lean-certified disproofs of Hyperbolic Conjectures~1, 2, and~3 in $\Hy^3$:
 
 \begin{theorem}[Sharp Euclidean C3 disproof at $n = 5$, planar and non-coplanar]\label{thm:main-c3}
 Let $\mathbf{x}^{(5)} \in C_5(\R^2) \subset C_5(\R^3)$ be the explicit $5$-point planar integer configuration defined in Section~\ref{sec:n5}.
@@ -446,6 +448,11 @@ preprint \texttt{arXiv:2508.13472} (2025).
 M.~Mazur and B.~V.~Petrenko,
 \emph{On the conjectures of Atiyah and Sutcliffe},
 Geom. Dedicata \textbf{158} (2012), 329--342 (\texttt{arXiv:1102.4662}).
+
+\bibitem{TanZhang2026}
+H.~Tan and Y.~Zhang,
+\emph{The Atiyah--Sutcliffe determinant at five points: positivity and failure of the deletion inequality},
+preprint, Zenodo (4 October 2026), \url{https://doi.org/10.5281/zenodo.23142909}.
 
 \end{thebibliography}
 
