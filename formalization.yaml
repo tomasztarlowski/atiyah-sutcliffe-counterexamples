@@ -1,0 +1,113 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Explicit Finite Counterexamples to the Euclidean and Hyperbolic Atiyah–Sutcliffe Conjectures"
+  description: >-
+    Lean 4 and Mathlib formalization refuting all three classical Atiyah–Sutcliffe conjectures
+    (C1, C2, and C3, 2001/2002) in both Euclidean 3-space C_n(R^3) and hyperbolic 3-space
+    C_n(H^3) via explicit integer witnesses, continuous homotopies, parity block Schur reductions,
+    and kernel-checked fixed-point interval arithmetic (zero sorry, zero admit, zero native_decide,
+    standard axioms {propext, Quot.sound, Classical.choice} only). Establishes: (1) the sharp
+    minimal n = 5 refutation of Euclidean Conjecture 3 both in R^2 and non-coplanar R^3; (2)
+    planar n = 57 (K = 3) and n = 63 (K = 2) sign reversals and direct nonzero C2 violations
+    (-1 < D_n < 0) via kernel Gaussian elimination and denominator folding; (3) genuinely non-
+    coplanar 3D C1/C2 disproofs lowered to n = 36 via coaxial Pythagorean (33, 56, 65) rings
+    (D_36(9) > 0 > D_36(10), Im D_36 = 0, IVT root D_36 = 0), complemented by mirror-pair
+    n = 59 witnesses; and (4) the first machine-checked hyperbolic H^3 refutations of C3 (n = 5)
+    and C1/C2 (n = 57 in H^2, n = 59 in H^3) via the Beltrami–Klein ball limit.
+  authors:
+    - "Tomasz Tarłowski"
+  responsible_maintainers:
+    - "Tomasz Tarłowski"
+  license: "Apache-2.0"
+  repository_url: "https://github.com/tomasztarlowski/atiyah-sutcliffe-counterexamples"
+
+classification:
+  arxiv: ["math.MG", "math-ph", "cs.LO"]
+  msc2020: ["51M15", "70G45", "81Q70", "68V20"]
+
+sources:
+  - title: "Explicit Finite Counterexamples to the Euclidean and Hyperbolic Atiyah–Sutcliffe Conjectures"
+    authors:
+      - "Tomasz Tarłowski"
+    id: "https://github.com/tomasztarlowski/atiyah-sutcliffe-counterexamples/blob/main/paper/atiyah_sutcliffe_counterexamples.pdf"
+    type: "paper"
+    relationship: "formalizes"
+    note: >-
+      Companion 15-page preprint by the author detailing the n = 5 sharp C3 refutation, K = 3
+      planar n = 57 witness, non-coplanar 3D n = 36 Pythagorean construction, n = 59 mirror-pair
+      C2 witness, and Beltrami–Klein hyperbolic transfer.
+    author_endorsement: "participated"
+  - title: "Configurations of points"
+    authors:
+      - "Michael F. Atiyah"
+    type: "paper"
+    location: "Phil. Trans. R. Soc. Lond. A 359 (2001), 1375–1387"
+    relationship: "disproves"
+    note: "Original formulation of Atiyah's Conjecture 1 on linear independence of n polynomials in R^3."
+    author_endorsement: "not-contacted"
+  - title: "The geometry of point particles"
+    authors:
+      - "Michael F. Atiyah"
+      - "Paul Sutcliffe"
+    type: "paper"
+    location: "Proc. R. Soc. Lond. A 458 (2002), 1089–1115"
+    relationship: "disproves"
+    note: >-
+      Formulated Conjectures 1, 2, and 3 in Euclidean R^3 and hyperbolic H^3. All three
+      conjectures are formally refuted here in both spaces.
+    author_endorsement: "not-contacted"
+  - title: "Singular Atiyah Configurations"
+    authors:
+      - "Jan Eickhoff"
+    id: "arXiv:2610.33090"
+    type: "paper"
+    relationship: "background"
+    note: >-
+      Proved asymptotic existence of singular configurations (D_n = 0) via dihedral two-orbit
+      families and proposed the Beltrami–Klein scaling limit; this work gives explicit small-n
+      witnesses (n = 36 3D, n = 57 K=3 planar, n = 5 C3, direct C2) and Lean 4 formal proofs.
+    author_endorsement: "not-contacted"
+
+related_formalizations:
+  - id: "https://github.com/azakhtyamov/atiyah-sutcliffe-disproof"
+    relationship: "independent"
+    note: >-
+      Independent Lean 4 formalization of Euclidean C1 at n = 46 using unnormalized determinants;
+      this repository formalizes normalized D_n, lowers 3D C1/C2 to n = 36, adds C3 at n = 5,
+      direct nonzero C2 witnesses, and hyperbolic H^3 disproofs.
+
+status:
+  scope: >-
+    Formalized unconditionally: Euclidean C3 refutation (sharp n = 5 planar & 3D), Euclidean
+    C1 & C2 refutations (planar n = 57, 63; non-coplanar 3D n = 36, 59), and Hyperbolic H^2/H^3
+    refutations of C3 (n = 5) and C1/C2 (n = 57, 59). Exact minimal C1/C2 threshold in 5 <= n <= 35
+    remains open.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Quot.sound", "Classical.choice"]
+
+automation:
+  methods:
+    - method: "agent"
+      framework: "Google Antigravity"
+      models:
+        - "Gemini (witness search, interval arithmetic kernel engineering, Lean 4 formalization)"
+        - "Claude & OpenAI Codex (independent mathematical review & verification)"
+      tool_setup: >-
+        60/80-digit arbitrary-precision verification in Python/mpmath (scripts/scan_atiyah_sutcliffe.py)
+        formalized and kernel-verified in Lean 4 v4.37.0-rc1 against Mathlib v4.37.0-rc1.
+      prompting_notes: "Author-directed development; all formal proofs verified by Lean 4 kernel and #print axioms."
+  notes: >-
+    AI assistance was used for search, Lean 4 proof engineering, and drafting; the author reviewed
+    all arguments and verified zero sorry compilation.
+
+review:
+  status: "self-assessed"
+  notes: >-
+    Verified locally by the author against Lean 4 v4.37.0-rc1 + Mathlib with zero sorry, zero admit,
+    zero native_decide, and strict Comparator type/axiom checking of Challenge vs Solution.
+
+acknowledgements: >-
+  Lean 4 and Mathlib contributors, Paul Sutcliffe, Jan Eickhoff, and Azat Akhtyamov.
