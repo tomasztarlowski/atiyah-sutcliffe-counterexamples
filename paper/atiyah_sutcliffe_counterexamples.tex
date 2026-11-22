@@ -1,0 +1,452 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{xurl}
+\usepackage{hyperref}
+
+\emergencystretch=1.8em
+\makeatletter
+\g@addto@macro\ttfamily{\def\_{\textunderscore\penalty\z@}}
+\makeatother
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\Hy}{\mathbb{H}}
+
+\title[Atiyah--Sutcliffe Counterexamples]{Explicit Finite Counterexamples to the Euclidean and Hyperbolic Atiyah--Sutcliffe Conjectures}
+\author{Tomasz Tar\l owski}
+\date{November 22, 2026}
+\subjclass[2020]{Primary 51M15, 70G45; Secondary 81Q70, 68V20}
+
+\begin{document}
+
+\begin{abstract}
+We present explicit witnesses, continuous families, and Lean~4 proofs refuting all three classical Atiyah--Sutcliffe conjectures (2001/2002) in Euclidean space $C_n(\mathbb{R}^3)$ and hyperbolic space $C_n(\mathbb{H}^3)$.
+First, we refute Euclidean Conjecture~3 at the sharp minimal $n = 5$ via a planar integer witness $\mathbf{x}^{(5)} \in C_5(\mathbb{R}^2)$ ($R_3 \approx 0.999996368278 < 1$), together with an existentially certified non-coplanar perturbation in $C_5(\mathbb{R}^3)$.
+Second, using certified Gaussian elimination and denominator folding in Lean~4, we improve our planar sign-reversal record from $n = 63$ ($K = 2$) to a three-orbit family $\mathbf{x}^{(57)}(s) \in C_{57}(\mathbb{R}^2)$ ($K = 3$), certifying $-1 < D_{57}(\mathbf{x}^{(57)}(1)) < 0$ ($\approx -0.498322$) and $D_{57}(\mathbf{x}^{(57)}(s_0)) = 0$ on $(0, 1)$, alongside $|D_{63}(\mathbf{x}^{(63)}(1))| < 1$.
+Third, in non-coplanar $\mathbb{R}^3$, we certify a $36$-point two-ring Pythagorean $(33,56,65)$ family via $36 \to 18 \times 18 \to 6 \times 6$ block reduction and interval arithmetic ($D_{36}(9) > 0 > D_{36}(10)$), yielding a singular zero $D_{36} = 0$ (refuting C1 and C2 at $n = 36$), complement it with a $59$-point mirror-pair extension certifying non-coplanar $-1 < D_{59} < 0$ and $D_{59} = 0$, and report numerical coaxial sweeps down to $n = 35$ ($\mathbb{R}^3$) and $n = 46$ ($\mathbb{Z}^3$).
+Fourth, formalizing the Beltrami--Klein model $C_n(\mathbb{B}^3) \cong C_n(\mathbb{H}^3)$ and $\lim_{\varepsilon \to 0^+} D_n^{\mathbb{H}}(\varepsilon \mathbf{x}) = D_n(\mathbf{x})$, we prove Hyperbolic C3 false at $n = 5$ ($\mathbb{H}^2, \mathbb{H}^3$) and Hyperbolic C1--C2 false at $n = 57$ ($\mathbb{H}^2$) and $n = 59$ ($\mathbb{H}^3$).
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Motivated by the Berry--Robbins geometric spin-statistics construction for $n$ identical particles in $\R^3$, Atiyah~\cite{Atiyah2001} and Atiyah--Sutcliffe~\cite{AtiyahSutcliffe2002} associated to every configuration $\mathbf{x} = (x_0, \dots, x_{n-1}) \in C_n(\R^3)$ of $n$ pairwise distinct points an $n$-tuple of complex polynomials $p_0, \dots, p_{n-1} \in \C[t]_{\le n-1}$ of degree at most $n - 1$.
+Specifically, for each ordered pair $i \ne j$, let $v_{ij} = (x_j - x_i)/\|x_j - x_i\| \in S^2$, and choose a nonzero $+1$-eigenspinor lift $\psi_{ij} \in \C^2 \setminus \{0\}$ satisfying $(v_{ij} \cdot \boldsymbol{\sigma})\psi_{ij} = \psi_{ij}$, where $\boldsymbol{\sigma} = (\sigma_1, \sigma_2, \sigma_3)$ are the standard Pauli matrices
+\[
+  \sigma_1 = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}, \qquad
+  \sigma_2 = \begin{pmatrix} 0 & -i \\ i & 0 \end{pmatrix}, \qquad
+  \sigma_3 = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}.
+\]
+Any two $+1$-eigenspinors of $v_{ij} \cdot \boldsymbol{\sigma}$ differ only by a nonzero complex scalar.
+Writing $\omega(u, v) = u_0 v_1 - u_1 v_0$ for the standard $\mathrm{SL}(2, \C)$-invariant symplectic form on $\C^2$, define the Atiyah polynomials and coefficient matrix $M(\mathbf{x}) = (M_{ik}(\mathbf{x}))_{0 \le i,k < n}$ via
+\[
+  p_i(t) = \prod_{j \ne i} \bigl(\psi_{ij,0} + \psi_{ij,1} t\bigr) = \sum_{k=0}^{n-1} M_{ik}(\mathbf{x}) t^k,
+\]
+and set the normalized Atiyah--Sutcliffe determinant to be
+\begin{equation}\label{eq:def-Dn}
+  D_n(\mathbf{x}) := \frac{\det M(\mathbf{x})}{\prod_{0 \le i < j < n} \omega(\psi_{ij}, \psi_{ji})}.
+\end{equation}
+Because rescaling $\psi_{ij} \mapsto \lambda_{ij}\psi_{ij}$ ($\lambda_{ij} \in \C^\times$) multiplies both numerator and denominator by $\prod_{i \ne j} \lambda_{ij}$, $D_n(\mathbf{x})$ is independent of spinor lift choices and is invariant under point permutations, $\mathrm{SO}(3)$ rotations, translations, and positive dilations~\cite{AtiyahSutcliffe2002}.
+
+Atiyah~\cite{Atiyah2001} and Atiyah--Sutcliffe~\cite{AtiyahSutcliffe2002} posed three central conjectures on $C_n(\R^3)$, together with their hyperbolic $\Hy^3$ analogues obtained by replacing Euclidean unit vectors $v_{ij}$ with forward ideal boundary endpoints $u_{ij} \in S^2 = \partial_\infty \Hy^3$ of oriented hyperbolic geodesic rays from $x_i$ through $x_j$:
+\begin{itemize}
+  \item \textbf{Conjecture~1 (C1, $n \ge 2$).} For every configuration of $n$ distinct points, $p_0, \dots, p_{n-1}$ are linearly independent; equivalently, $D_n \ne 0$.
+  \item \textbf{Conjecture~2 (C2, $n \ge 2$).} For every configuration of $n$ distinct points, $|D_n| \ge 1$.
+  \item \textbf{Conjecture~3 (C3, $n \ge 3$).} For every configuration $\mathbf{x}$ of $n$ distinct points,
+  \[
+    |D_n(\mathbf{x})|^{n-2} \ge \prod_{k=0}^{n-1} |D_{n-1}(\mathbf{x} \setminus \{x_k\})|.
+  \]
+\end{itemize}
+Conjecture~2 directly implies Conjecture~1.
+In the Euclidean setting, Eastwood--Norbury~\cite{EastwoodNorbury2001} proved C1 for $n = 4$ (with additional special families proved by \DJ okovi\'c~\cite{Djokovic2002}), Atiyah~\cite{Atiyah2001} proved C3 for $n = 3$, Mazur--Petrenko~\cite{MazurPetrenko2011} established algebraic reformulations and special-case bounds on C1--C3, and Bou~Khuzam--Johnson~\cite{BouKhuzamJohnson2014} established Euclidean C2 and C3 for $n = 4$.
+In October~2026, Eickhoff~\cite{Eickhoff2026} proved the asymptotic existence of arbitrarily large finite singular configurations ($D_n = 0$, hence refuting C1 and asymptotically C2) in planar Euclidean space via two-orbit dihedral families ($K = 2$), and established asymptotic hyperbolic singular configurations via small-scale transfer into the Beltrami--Klein ball (\cite[\S7]{Eickhoff2026}), while leaving open concrete small-$n$ bounds, explicit C2 counterexamples with $-1 < D_n < 0$, Conjecture~3, and whether additional orbit rows ($K > 2$) yield new mechanisms or lower concrete thresholds.
+Independently in October~2026, Akhtyamov~\cite{Akhtyamov2026} formalized a disproof of Euclidean Conjecture~1 in Lean~4 using a $46$-point helical 3D configuration via the unnormalized projective formulation of~\cite{MazurPetrenko2011} (which expresses C1 without defining the normalized determinant $D_n$ needed for C2 and C3).
+
+By contrast, our Lean-formalized theorems construct the normalized determinant $D_n(\mathbf{x})$ directly and provide the first disproof of Conjecture~3 at the sharp minimal $n = 5$ (planar and strictly non-coplanar), lower the Lean-certified 3D C1/C2 threshold from $n = 46$ down to $n = 36$, certify direct nonzero C2 counterexamples with $-1 < D_n < 0$ at $n = 57, 63$ (planar) and $n = 59$ (strictly non-coplanar), and establish the first Lean-certified disproofs of Hyperbolic Conjectures~1, 2, and~3 in $\Hy^3$:
+
+\begin{theorem}[Sharp Euclidean C3 disproof at $n = 5$, planar and non-coplanar]\label{thm:main-c3}
+Let $\mathbf{x}^{(5)} \in C_5(\R^2) \subset C_5(\R^3)$ be the explicit $5$-point planar integer configuration defined in Section~\ref{sec:n5}.
+Then
+\[
+  |D_5(\mathbf{x}^{(5)})|^{5-2} < \prod_{k=0}^{4} |D_4(\mathbf{x}^{(5)} \setminus \{x_k\})|.
+\]
+Moreover, lifting $x_0$ off the plane by sufficiently small $\delta > 0$ yields an existentially certified strictly non-coplanar configuration $\mathbf{x}^{(5)}_\delta \in C_5(\R^3)$ violating Conjecture~3.
+Since Euclidean C3 holds for $n = 3, 4$, $n = 5$ is the exact minimal particle count for which it fails in $\R^3$.
+\end{theorem}
+
+\begin{theorem}[Planar $n = 57$ ($K=3$) and $n = 63$ ($K=2$) refutations of C1 and C2]\label{thm:main-c12}
+Let $\mathbf{x}^{(57)}(s) \in C_{57}(\R^2) \subset C_{57}(\R^3)$ and $\mathbf{x}^{(63)}(s) \in C_{63}(\R^2) \subset C_{63}(\R^3)$ ($s \in [0, 1]$) be the explicit linear homotopies defined in Section~\ref{sec:n57}.
+In Lean~4:
+\begin{enumerate}
+  \item At the explicit integer endpoint $\mathbf{x}^{(57)}(1)$, $D_{57}(\mathbf{x}^{(57)}(1)) \in \R$ satisfies $-1 < D_{57}(\mathbf{x}^{(57)}(1)) < 0$, directly refuting Conjecture~2 (numerically $-0.498322440876$); by the Intermediate Value Theorem along $\mathbf{x}^{(57)}$, Lean~4 certifies a singular configuration satisfying $D_{57} = 0$ and refuting Conjecture~1 (realized on $[0, 1]$ at an interior $s_0 \in (0, 1)$ since $D_{57}(\mathbf{x}^{(57)}(0)) = 1$ and $D_{57}(\mathbf{x}^{(57)}(1)) < 0$; numerically $s_0 \approx 0.999856838749$).
+  \item At the explicit integer endpoint $\mathbf{x}^{(63)}(1)$, $D_{63}(\mathbf{x}^{(63)}(1)) \in \R$ satisfies $-1 < D_{63}(\mathbf{x}^{(63)}(1)) < 0$ (numerically $-0.639592897554$), and Lean~4 likewise certifies a vanishing configuration $D_{63} = 0$ obtained from the Intermediate Value Theorem along $\mathbf{x}^{(63)}$ at an interior parameter $s_0 \in (0, 1)$ (numerically $0.988613684809$).
+\end{enumerate}
+(Note that the exported existential Lean declarations \texttt{exists\_planar\_57\_atiyahDet\_zero} and \texttt{exists\_planar\_63\_atiyahDet\_zero} state the existence of a singular configuration in $C_n(\R^3)$, with interiority $s_0 \in (0, 1)$ along the path following immediately from their proof via $D_n(\mathbf{x}(0)) = 1$ and $D_n(\mathbf{x}(1)) < 0$.)
+In particular, using $K = 3$ strictly positive-$x$ off-axis points strictly improves upon our $K = 2, m = 1$ planar realization ($n = 57 < 63$).
+\end{theorem}
+
+\begin{theorem}[Strictly non-coplanar 3D refutations of C1 and C2 at $n = 36$ and $n = 59$]\label{thm:main-3d}
+In strictly non-coplanar Euclidean three-space, Lean~4 certifies two complementary families refuting Conjectures~1 and~2:
+\begin{enumerate}
+  \item At $n = 36$, the explicit two-ring Pythagorean $(33, 56, 65)$ family $\mathbf{x}^{(36)}(t) \in C_{36}(\R^3)$ (\texttt{x36Clamp}, Section~\ref{sec:3d36}) is strictly non-coplanar (\texttt{Noncoplanar3D}) for every $t \in \R$, satisfies $\mathrm{Im}\, D_{36}(\mathbf{x}^{(36)}(t)) = 0$ identically, and undergoes a Lean-certified sign reversal $D_{36}(\mathbf{x}^{(36)}(9)) > 0 > D_{36}(\mathbf{x}^{(36)}(10))$ via complex interval arithmetic at scale $S_{36} = 10^{18}$. Continuity yields an interior zero $t_0 \in (9, 10)$ with $D_{36}(\mathbf{x}^{(36)}(t_0)) = 0$ (numerically $t_0 \approx 9.392050$), refuting both C1 and C2 at $n = 36$.
+  \item At $n = 59$, appending a symmetric mirror pair $(0, \pm 1, H)$ to $\mathbf{x}^{(57)}(s)$ preserves $\mathrm{Im}\, D_{59} = 0$, enforces strict non-coplanarity ($\neg \mathrm{IsCoplanar}$) whenever $s \ne 0$, and converges to $D_{57}(\mathbf{x}^{(57)}(s))$ as $H \to +\infty$. Consequently, for sufficiently large $H > 0$, Lean~4 certifies strictly non-coplanar configurations in $C_{59}(\R^3)$ satisfying both $-1 < D_{59} < 0$ (directly refuting C2 with $D_{59} \ne 0$) and $D_{59} = 0$ (refuting C1).
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Lean-certified Hyperbolic C1, C2, and C3 disproofs in $\Hy^3$]\label{thm:main-hyp}
+The tangent scaling limit $\lim_{\varepsilon \to 0^+} D_n^{\Hy}(\varepsilon \mathbf{x}) = D_n(\mathbf{x})$ holds for every Euclidean configuration $\mathbf{x} \in C_n(\R^3)$ upon embedding into the Beltrami--Klein unit ball $\B^3 \cong \Hy^3$, while preserving geodesic vs.\ affine coplanarity.
+Applying this transfer to our Euclidean witnesses $\mathbf{x}^{(5)}$, $\mathbf{x}^{(5)}_\delta$, $\mathbf{x}^{(57)}(s)$, and its mirror-pair extension $\widetilde{\mathbf{x}}_H(s)$ (with sufficiently large $H > 0$, sufficiently small $\varepsilon > 0$, and an interior homotopy root for C1), Lean~4 certifies:
+\begin{enumerate}
+  \item Hyperbolic Conjecture~3 fails at $n = 5$ in both planar $\Hy^2$ and strictly non-coplanar $\Hy^3$.
+  \item Hyperbolic Conjectures~1 and~2 fail in planar $\Hy^2 \subset \Hy^3$ at $n = 57$ and in strictly non-coplanar $\Hy^3$ at $n = 59$, via both direct nonzero witnesses ($-1 < D_n^{\Hy} < 0$) and vanishing configurations ($D_n^{\Hy} = 0$).
+\end{enumerate}
+Note that while $n = 5$ matches the sharp Euclidean C3 threshold, whether Hyperbolic Conjecture~3 can already fail at $n = 3$ or $n = 4$ remains open.
+\end{theorem}
+
+\begin{remark}[Scope relative to Malkoun's graph generalization]
+Malkoun~\cite{Malkoun2025} introduced a graph-theoretic extension $A_G(\mathbf{x})$ for arbitrary simple graphs $G$ on $n$ vertices (with $G = K_n$ recovering $D_n$ up to normalization).
+This paper and the Lean~4 modules \texttt{AtiyahSutcliffe.lean}, \texttt{AtiyahSutcliffeExtensions.lean}, and \texttt{AtiyahSutcliffe3D36.lean} strictly treat the classical complete-graph conjectures C1--C3 on $C_n(\R^3)$ and $C_n(\Hy^3)$.
+\end{remark}
+
+\section{Ordered Planar Formula and Chart-Independent Limit Theorem}
+
+Restrict attention first to configurations in the $(x, z)$-plane $y = 0$ with strictly increasing vertical coordinates $z_0 < z_1 < \dots < z_{n-1}$, writing $\mathbf{x}_i = (x_i, 0, z_i)$.
+For every $0 \le i < j < n$, let $\Delta x_{ij} = x_j - x_i$, $\Delta z_{ij} = z_j - z_i > 0$, and $r_{ij} = \sqrt{\Delta x_{ij}^2 + \Delta z_{ij}^2}$, and define the stereographic planar slope
+\begin{equation}\label{eq:planar-slope}
+  c_{ij} := \frac{\Delta x_{ij}}{\Delta z_{ij} + r_{ij}} \in (-1, 1).
+\end{equation}
+Notice that $v_{ij} = \bigl(\frac{2c_{ij}}{1 + c_{ij}^2}, 0, \frac{1 - c_{ij}^2}{1 + c_{ij}^2}\bigr)$.
+Direct substitution into $v_{ij} \cdot \boldsymbol{\sigma}$ shows that $(1, c_{ij})^\top$ is a nonzero $+1$-eigenspinor of $v_{ij} \cdot \boldsymbol{\sigma}$ and $(-c_{ij}, 1)^\top$ is a nonzero $+1$-eigenspinor of $(-v_{ij}) \cdot \boldsymbol{\sigma}$ for every $c_{ij} \in (-1, 1)$ (including the collinear vertical case $c_{ij} = 0$, where $\psi^{\mathrm{can}}(0, 0, -1)$ has a south-pole division singularity).
+Moreover, $\omega((1, c_{ij})^\top, (-c_{ij}, 1)^\top) = 1 + c_{ij}^2 > 0$.
+
+\begin{proposition}[Smooth ordered-height planar determinant]\label{prop:planar}
+Let $\mathbf{x}_i = (x_i, 0, z_i) \in \R^3$ satisfy $z_0 < z_1 < \dots < z_{n-1}$, and define $M^{\mathrm{pl}}(\mathbf{x}) \in \R^{n \times n}$ by letting row $i$ hold the coefficients $1, t, \dots, t^{n-1}$ of
+\[
+  p_i^{\mathrm{pl}}(t) = \prod_{j < i} (-c_{ji} + t) \prod_{j > i} (1 + c_{ij} t).
+\]
+Then $D_n(\mathbf{x})$ is real and equals
+\[
+  D_n(\mathbf{x}) = \frac{\det M^{\mathrm{pl}}(\mathbf{x})}{\prod_{0 \le i < j < n} (1 + c_{ij}^2)}.
+\]
+In particular, along any path $s \mapsto \mathbf{x}(s) = ((s X_i, 0, Z_i))_{i=0}^{n-1}$ with $Z_0 < \dots < Z_{n-1}$, every point remains distinct for all $s \in \R$, $s \mapsto D_n(\mathbf{x}(s))$ is real-valued and continuous, and $D_n(\mathbf{x}(0)) = 1$ since $c_{ij}(0) = 0$ makes $M^{\mathrm{pl}}(\mathbf{x}(0)) = I_n$.
+(Lean~4: \texttt{atiyahDet\_eq\_planarMat\_div}, \texttt{continuous\_planarPath\_re}, \texttt{planarPath\_zero\_eq\_one}.)
+\end{proposition}
+
+\begin{proof}
+Since $\Delta z_{ij} > 0$, $\Delta z_{ij} + r_{ij} > 0$ avoids zero denominators across all $0 \le i < j < n$.
+By spinor-lift independence (Lemma~\ref{lem:chart-limit}), choosing $\psi_{ij} = (1, c_{ij})^\top$ for $i < j$ and $\psi_{ij} = (-c_{ji}, 1)^\top$ for $i > j$ produces rows equal to $p_i^{\mathrm{pl}}(t)$ and denominator $\prod_{i<j} (1 + c_{ij}^2) > 0$, establishing reality and continuity across all $s \in \R$.
+\end{proof}
+
+To prove genuine 3D and hyperbolic convergence where unit directions $v_{ij}$ can approach the south pole $(0, 0, -1)$ (discontinuous for the normalized northern formula), we formalize local polynomial chart switching:
+
+\begin{lemma}[Chart-independent spinor determinant and unit-direction limit]\label{lem:chart-limit}
+Let $D_n^{\mathrm{spin}}(\psi)$ denote the determinant ratio~\eqref{eq:def-Dn} evaluated on any family of nonzero $+1$-eigenspinors $\psi_{ij}$ of $u_{ij} \cdot \boldsymbol{\sigma}$, where $u_{ij} \in S^2$ satisfies $u_{ij} \ne u_{ji}$ for all $i \ne j$.
+Then $D_n^{\mathrm{spin}}(\psi)$ is independent of the choice of $+1$-eigenspinors (\texttt{atiyahDetOfSpinors\_eq\_of\_unitSpinors}), so $D_n^{\mathrm{spin}}(u)$ is well defined purely as a function of the direction field $u = (u_{ij})_{i \ne j}$.
+For a fixed reference unit vector $u_0 \in S^2$ and arbitrary $w \in S^2$, define the unnormalized polynomial spinor lift
+\[
+  \psi_{u_0}^{\mathrm{chart}}(w) := \begin{cases}
+    (1 + w_2,\; w_0 + i w_1)^\top & \text{if } u_{0,2} \ge 0,\\
+    (w_0 - i w_1,\; 1 - w_2)^\top & \text{if } u_{0,2} < 0.
+  \end{cases}
+\]
+Direct multiplication verifies $(w \cdot \boldsymbol{\sigma})\psi_{u_0}^{\mathrm{chart}}(w) = \psi_{u_0}^{\mathrm{chart}}(w)$ (\texttt{pauliDot\_chartSpinor}), and $\psi_{u_0}^{\mathrm{chart}}(w) \ne 0$ in a neighborhood of $u_0$ (\texttt{chartSpinor\_ne\_zero}).
+Consequently, whenever unit-sphere direction fields $u_{ij}(\alpha) \to u_{ij}^* \in S^2$ along a filter on $\alpha$, with $u_{ij}^* \ne u_{ji}^*$ at the limit and eventually $u_{ij}(\alpha) \ne u_{ji}(\alpha)$ for all $i \ne j$, we have $D_n^{\mathrm{spin}}(u(\alpha)) \to D_n^{\mathrm{spin}}(u^*)$ (\texttt{tendsto\_atiyahDetOfSpinors\_unit}, \texttt{tendsto\_atiyahDet\_of\_tendsto}).
+\end{lemma}
+
+\section{Sharp Counterexample to Euclidean Conjecture~3 at $n = 5$}\label{sec:n5}
+
+\subsection{Explicit integer coordinates and high-precision values}
+Define the $5$-point planar witness $\mathbf{x}^{(5)} = (p_0, p_1, p_2, p_3, p_4) \in (\Z \times \{0\} \times \Z)^5$ by
+\begin{align*}
+  p_0 &= (1198773, 0, -320821), &
+  p_1 &= (212773, 0, -58745), &
+  p_2 &= (-55, 0, 3), \\
+  p_3 &= (-56, 0, 4), &
+  p_4 &= (-697578, 0, 117714).
+\end{align*}
+Its $z$-coordinates are strictly increasing and its minimal inter-point distance is $\|p_3 - p_2\| = \sqrt{2} > 0$.
+Table~\ref{tab:n5-values} displays $80$-digit \texttt{mpmath} evaluations (rounded to $20$ decimal places) showing $R_3 = |D_5|^3 / \prod_k |D_4(\mathbf{x}^{(5)} \setminus \{p_k\})| \approx 0.999996368278 < 1$.
+
+\begin{table}[h]
+\centering
+\small
+\caption{Planar $5$-point witness $\mathbf{x}^{(5)}$ and its $4$-point sub-determinants ($20$ digits shown from $80$-digit \texttt{mpmath} evaluation).}
+\label{tab:n5-values}
+\begin{tabular}{ll}
+\toprule
+Quantity & Numerical value \\
+\midrule
+$D_5(\mathbf{x}^{(5)})$ & $1.00098008192048394175$ \\
+$D_4(\mathbf{x}^{(5)} \setminus \{p_0\})$ & $1.00047373646488409028$ \\
+$D_4(\mathbf{x}^{(5)} \setminus \{p_1\})$ & $1.00051482265799591186$ \\
+$D_4(\mathbf{x}^{(5)} \setminus \{p_2\})$ & $1.00097400674265848250$ \\
+$D_4(\mathbf{x}^{(5)} \setminus \{p_3\})$ & $1.00097394960174767561$ \\
+$D_4(\mathbf{x}^{(5)} \setminus \{p_4\})$ & $1.00000711481910285281$ \\
+\midrule
+LHS $= |D_5(\mathbf{x}^{(5)})|^3$ & $1.00294312838459245275$ \\
+RHS $= \prod_{k=0}^4 |D_4(\mathbf{x}^{(5)} \setminus \{p_k\})|$ & $1.00294677080822041528$ \\
+Ratio $R_3 = \mathrm{LHS}/\mathrm{RHS}$ & $0.99999636827822375130 < 1$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Denominator cancellation and Lean~4 interval certification}
+Writing $\mathrm{den}_m(\mathbf{y}) := \prod_{0 \le i < j < m}(1 + c_{ij}(\mathbf{y})^2) > 0$, each pair $\{i, j\}$ ($0 \le i < j < 5$) belongs to exactly $3$ of the $5$ four-point deletions, giving the exact identity $\mathrm{den}_5(\mathbf{x})^3 = \prod_{k=0}^{4} \mathrm{den}_4(\mathbf{x} \setminus \{x_k\})$.
+Thus C3 at $n = 5$ reduces cleanly to $|\det M^{\mathrm{pl}}(\mathbf{x}^{(5)})|^3 \ge \prod_{k=0}^{4} |\det M^{\mathrm{pl}}(\mathbf{x}^{(5)} \setminus \{p_k\})|$.
+Using outward-rounded fixed-point intervals \texttt{FpIv} at scale $S_5 = 10^{18}$, Lean's kernel certifies an integer separation margin exceeding $3.09 \times 10^{90}$ (\texttt{c3\_int\_gap}, \texttt{exists\_five\_planar\_points\_violating\_conjecture\_3}, \texttt{disproof\_atiyah\_sutcliffe\_conjecture\_3}).
+
+\subsection{Strictly non-coplanar 3D realization at $n = 5$}\label{sec:n5-3d}
+Because $p_1, p_2, p_3$ are non-collinear in $y = 0$, lifting $p_0$ off the plane to $(1198773, \delta, -320821)$ for $\delta \ne 0$ (\texttt{x5Perturb}) produces a strictly non-coplanar configuration (\texttt{not\_isCoplanar\_x5Perturb}).
+Applying Lemma~\ref{lem:chart-limit} as $\delta \to 0^+$ to $D_5(\mathbf{x}^{(5)}_\delta)$ and all five sub-determinants proves the strict non-coplanar theorem \texttt{exists\_five\_noncoplanar\_points\_violating\_conjecture\_3} of Theorem~\ref{thm:main-c3}.
+
+\section{Planar Records: Axial $n = 63$ ($K=2$) and Gaussian $n = 57$ ($K=3$)}\label{sec:n57}
+
+\subsection{Exact $2 \times 2$ axial reduction at $n = 63$ and direct $|D_{63}| < 1$ certificate}\label{sec:n63}
+Take $a = 31$, $b = 30$, $n = 63$, and define $\mathbf{x}^{(63)}(s) = ((s X_i, 0, Z_i))_{i=0}^{62}$ by $(0, i)$ for $0 \le i < 31$, $(3097, 38539)$ at $i = 31$, $(80093, 40720)$ at $i = 32$, and $(0, 40830 + i - 33)$ for $33 \le i < 63$.
+Because only rows $31$ and $32$ are non-axial, eliminating lower axial pivots left-to-right and upper axial pivots right-to-left reduces $\det M^{\mathrm{pl}}(\mathbf{x}^{(63)}(1))$ identically to a $2 \times 2$ determinant (\texttt{planarMat\_det\_eq\_elimFront}).
+At $S_{63} = 10^{35}$, \texttt{FpIv} encloses $S_{63} \det M^{\mathrm{pl}}(\mathbf{x}^{(63)}(1))$ inside $[\mathrm{lo}_{63}, \mathrm{hi}_{63}]$ with $\mathrm{hi}_{63} < 0$, establishing $D_{63}(\mathbf{x}^{(63)}(1)) < 0$ and a homotopy zero $D_{63}(\mathbf{x}^{(63)}(s_0)) = 0$ (numerically $s_0 \approx 0.98861368480927$, $D_{63}(1) \approx -0.639592897554$).
+
+In \texttt{AtiyahSutcliffeExtensions.lean}, we add recursive interval denominator folding \texttt{denFoldIv} over off-axis pairs (\texttt{denFoldIv\_lo\_le\_planarDen}): since $1 + c_{ij}^2 = 1$ identically whenever $x_i = x_j = 0$, only pairs touching $\{31, 32\}$ contribute (\texttt{activePairs\_valid}).
+Evaluating at $S_{63} = 10^{35}$ yields exact integer bounds \texttt{den63\_cert} spanning
+{\scriptsize
+\begin{align*}
+  \mathrm{den}_{63}.\mathrm{lo} &= 3572463025754843646294686642028955894118226387223898, \\
+  \mathrm{den}_{63}.\mathrm{hi} &= 3572463025754843646294686642028962394159364947130643,
+\end{align*}
+}%
+certifying $|D_{63}(\mathbf{x}^{(63)}(1))| < 1$ directly inside Lean~4 (\texttt{x63Path\_one\_norm\_lt\_one}).
+
+\subsection{Certified Gaussian elimination and the $n = 57$ ($K=3, m=1$) planar record}
+To certify multi-orbit matrices generally, we formalize outward-rounded integer interval division \texttt{FpIv.divFp} and pivot elimination \texttt{gaussDetIv}: whenever the leading pivot lies in a zero-separated interval (\texttt{SepZero}), $\det M = M_{00} \cdot \det M'$ where $M'_{ij} = M_{i+1,j+1} - (M_{i+1,0}/M_{00}) M_{0,j+1}$ (\texttt{det\_eq\_head\_mul\_det\_elimSubMatrix}, \texttt{gaussDetIv\_mem}).
+
+Define the $57$-point three-orbit planar integer family $\mathbf{x}^{(57)}(s) = ((s X_i, 0, Z_i))_{i=0}^{56}$ by $a = 28$ lower axial points $(0, 0, i)$ ($0 \le i < 28$), $K = 3$ strictly positive-$x$ off-axis points
+\[
+  (14650, 0, 177472), \qquad (418904, 0, 185651), \qquad (457123, 0, 188492),
+\]
+and $b = 26$ upper axial points $(0, 0, 189224 + i - 31)$ ($31 \le i < 57$).
+Running \texttt{polyRowFastIv}, \texttt{gaussDetIv}, and \texttt{denFoldIv} inside Lean's kernel at scale $S_{57} = 10^{40}$ yields exact integer bounds \texttt{det57\_cert} on $S_{57}\det M^{\mathrm{pl}}$ and \texttt{den57\_cert} on $S_{57}\mathrm{den}_{57}$:
+{\scriptsize
+\begin{align*}
+  \mathrm{det}_{57}.\mathrm{lo} &= -17411234991859714032811859894129118424785873099745261547036087859193, \\
+  \mathrm{det}_{57}.\mathrm{hi} &= -17411234991829693892225341342105913129889341095524049480884492604588, \\
+  \mathrm{den}_{57}.\mathrm{lo} &= \phantom{-}34939696798004197259243933067120385907974093935680562090090087257535, \\
+  \mathrm{den}_{57}.\mathrm{hi} &= \phantom{-}34939696798004197259243933067120385908839369332867306230200120659093.
+\end{align*}
+}%
+Here $-\mathrm{den}_{57}.\mathrm{lo} < \mathrm{det}_{57}.\mathrm{lo} \le \mathrm{det}_{57}.\mathrm{hi} < 0$, certifying $-1 < D_{57}(\mathbf{x}^{(57)}(1)) < 0$ directly (\texttt{x57Path\_one\_re\_neg\_and\_norm\_lt\_one}, \texttt{exists\_planar\_57\_violating\_conjecture\_2}) and locating a homotopy zero $D_{57}(\mathbf{x}^{(57)}(s_0)) = 0$ (\texttt{exists\_planar\_57\_atiyahDet\_zero}).
+Independent $80$-digit \texttt{mpmath} evaluation confirms $D_{57}(\mathbf{x}^{(57)}(1)) \approx -0.49832244087588239334$ and $s_0 \approx 0.99985683874856118709$ (with $30$-digit root residual $|D_{57}| < 3.4 \times 10^{-19}$ and verified sign change on $[s_0 - 10^{-18}, s_0 + 10^{-18}]$).
+
+\begin{remark}[Multi-orbit planar comparison ($K=3$ vs.\ $K=2$)]
+In~\cite{Eickhoff2026}, Eickhoff analyzed two coaxial $m$-gons ($K = 2$) and noted in the conclusion that additional orbit rings beyond $K = 2$ might generate further singularity families.
+Even restricting to $m = 1$ planar configurations with all off-axis points on $x > 0$, our $K = 3$ witnesses achieve negative $D_{57}$ ($D_{57} \approx -1095.557$ for $(a,b) = (27,27)$ in \texttt{data/atiyah\_sutcliffe\_scan.json}, and $-0.498322$ in $\mathbf{x}^{(57)}(1)$), improving by $6$ points on our previously certified $K = 2, m = 1$ realization ($n = 63$), while leaving open whether an even smaller planar $K = 2$ configuration exists.
+With $K = 2, m = 2$, taking $a = 30$ lower axial points $(0,0,0..29)$, four off-axis points $(-4536,0,62866)$, $(4536,0,62867)$, $(-107802,0,66640)$, $(107802,0,66641)$, and $b = 24$ upper axial points $(0,0,66660..66683)$ defines a $58$-point planar integer family $\mathbf{x}^{(58)}(s)$ whose endpoint numerically satisfies $D_{58}(\mathbf{x}^{(58)}(1)) \approx -0.505421925599$ with homotopy zero $s_0 \approx 0.999969508354$.
+\end{remark}
+
+\section{Strictly Non-Coplanar 3D Disproofs ($n = 36$ and $n = 59$) and Coaxial Sweeps}\label{sec:3d}
+
+\subsection{Lean-certified Pythagorean two-ring 3D disproof at $n = 36$}\label{sec:3d36}
+To lower the Lean-certified strictly non-coplanar 3D threshold directly (improving by $10$ points on the $46$-point helical C1 disproof of~\cite{Akhtyamov2026} while also certifying normalized $D_{36} = 0$ for C2) without asymptotic mirror lifting, \texttt{AtiyahSutcliffe3D36.lean} constructs the explicit $36$-point two-ring Pythagorean family $\mathbf{x}^{(36)}(t) \in C_{36}(\R^3)$ (\texttt{x36Clamp}), rescaling base integer points \texttt{x36BaseArr} horizontally by $\max(t, 1)$ while holding heights $z_i$ fixed:
+\begin{itemize}
+  \item $a = 18$ lower axial points $(0, 0, 10k)$ ($0 \le k \le 17$);
+  \item an inner $6$-point Pythagorean $(33, 56, 65)$ ring at $z = 104040$ built from $(520, 264, 448) = 8(65, 33, 56)$, placing $(x, y) \in \{(\pm 520, 0), (\pm 264, \pm 448)\}$ on a common circle (an irregular $6$-point ring paired antipodally in $z$-monotone order);
+  \item an outer $6$-point Pythagorean ring at $z = 107780$ scaled by ring ratio $R = 23$, giving $(x, y) \in \{(\pm 11960, 0), (\pm 6072, \pm 10304)\}$; and
+  \item $b = 6$ upper axial points $(0, 0, 107790 + 10k)$ ($0 \le k \le 5$).
+\end{itemize}
+By dilation invariance of $D_n$, dividing all coordinates by $10$ reproduces the archived parameter specification \texttt{n36\_3d\_pythagorean\_certified} ($z_A = 10404$, $z_B = 10778$, $z_{U,0} = 10779$, $s_d = 10$). The Lean formalization verifies four structural components:
+\begin{enumerate}
+  \item \textbf{Non-coplanarity, reality, and continuity:} Two distinct axial points $(0, 0, 0)$ and $(0, 0, 10)$ force any containing affine plane $ax + by + cz = d$ to satisfy $d = c = 0$, after which the two inner-ring points $(520 \max(t,1), 0, 104040)$ and $(264 \max(t,1), 448 \max(t,1), 104040)$ force $a = b = 0$, yielding \texttt{Noncoplanar3D (x36Clamp t).1} for all $t \in \R$ (\texttt{x36Clamp\_noncoplanar}; notice \texttt{Noncoplanar3D} and $\neg \mathrm{IsCoplanar}$ in \texttt{AtiyahSutcliffeExtensions.lean} express the identical affine non-coplanarity condition). Under the $y$-reflection permutation \texttt{reflectPerm36} swapping the four ring pairs $(20 \leftrightarrow 23)$, $(21 \leftrightarrow 22)$, $(26 \leftrightarrow 29)$, $(27 \leftrightarrow 28)$, conjugation symmetry forces $\mathrm{Im}\, D_{36}(\mathbf{x}^{(36)}(t)) = 0$ identically (\texttt{atiyahDet\_x36Clamp\_im\_zero}), and $t \mapsto \mathrm{Re}\, D_{36}(\mathbf{x}^{(36)}(t))$ is continuous (\texttt{continuous\_atiyahDet\_x36Clamp\_re}).
+  \item \textbf{Antipodal parity block reduction $36 \to 18 \times 18$:} Pairing each axial point identically and pairing ring partners under \texttt{antipodalPerm36} gives stereographic slope negation $\mathbf{w}_{\tau(i),\tau(j)} = -\mathbf{w}_{ij}$ across the family. Reindexing even and odd monomial degrees via \texttt{parityEquiv} splits the $36 \times 36$ coefficient matrix into $18 \times 18$ even- and odd-degree blocks (\texttt{det\_stereoMat\_eq\_even\_odd}):
+  \[
+    \det M^{\mathrm{st}}(\mathbf{x}^{(36)}(t)) = 64 \det M_{\mathrm{even}}(t) \det M_{\mathrm{odd}}(t).
+  \]
+  \item \textbf{Exact axial elimination $18 \to 6$:} In both \texttt{evenMat18} and \texttt{oddMat18}, rows corresponding to the lower and upper axial blocks satisfy triangularity with unit diagonals, reducing each $18 \times 18$ determinant identically to a $6 \times 6$ Schur complement \texttt{reduce18To6C} along pivot schedule $[0,\dots,8,17,16,15]$ (\texttt{det\_18\_eq\_det\_6}).
+  \item \textbf{Complex interval sign change and IVT zero:} Using outward-rounded complex fixed-point intervals \texttt{CFpIv} at scale $S_{36} = 10^{18}$ (with kernel-verified $9$-stage polynomial evaluation checkpoints and Laplace $6 \times 6$ determinants \texttt{prod9Cert}, \texttt{prod10Cert}), Lean's kernel certifies $D_{36}(\mathbf{x}^{(36)}(9)) > 0$ (\texttt{atiyahDet\_x36Clamp\_9\_re\_pos}) and $D_{36}(\mathbf{x}^{(36)}(10)) < 0$ (\texttt{atiyahDet\_x36Clamp\_10\_re\_neg}, \texttt{exists\_noncoplanar\_3d\_36\_atiyahDet\_neg}). Independent $80$-digit \texttt{mpmath} evaluation yields $D_{36}(9) \approx +4.4639441897 \times 10^{11}$ and $D_{36}(10) \approx -1.3361590585 \times 10^{11}$, with root $t_0 \approx 9.392049935734$. By the Intermediate Value Theorem on $[9, 10]$, Lean~4 certifies a strictly non-coplanar zero $D_{36}(\mathbf{x}^{(36)}(t_0)) = 0$ (\texttt{exists\_noncoplanar\_3d\_36\_atiyahDet\_zero}), proving \texttt{disproof\_atiyah\_det\_nonzero\_3d\_36}, \texttt{disproof\_atiyah\_conjecture\_1\_3d\_36}, and \texttt{disproof\_atiyah\_sutcliffe\_conjecture\_2\_3d\_36}.
+\end{enumerate}
+
+\subsection{Mirror-pair lifting and formal non-coplanar nonzero C2 disproof at $n = 59$}
+While $\mathbf{x}^{(36)}(10)$ has $|D_{36}| > 10^{11}$ and therefore refutes C2 at $n = 36$ via the singular IVT point $D_{36} = 0$, our $59$-point mirror-pair construction additionally yields a Lean-certified non-coplanar witness directly violating $0 < |D_{59}| < 1$ (and transfers cleanly to $\Hy^3$). For the planar path $s \mapsto \mathbf{x}^{(57)}(s)$ in $y = 0$, define the $59$-point \emph{mirror-pair extension} $\widetilde{\mathbf{x}}_H(s) \in C_{59}(\R^3)$ (\texttt{mirrorPairExt}) by appending $p_{57} = (0, 1, H)$ and $p_{58} = (0, -1, H)$.
+Properties~(1) and~(3) below hold for every distinct-point configuration $\mathbf{x} \in C_n(\R^3)$ with $y_i \equiv 0$, while along any continuous collision-free planar path $s \mapsto \mathbf{x}(s) \in C_n(\R^3)$ ($y_i \equiv 0$), property~(2) holds at every parameter $s$ for which $\mathbf{x}(s)$ contains three non-collinear points (in particular, $\mathbf{x}^{(57)}(s)$ for all $s \ne 0$):
+\begin{enumerate}
+  \item \textbf{Exact reality:} Under the last-pair transposition $\sigma = (n\;\; n+1)$, $\widetilde{\mathbf{x}}_H(s)_{\sigma(k)} = (x_k, -y_k, z_k)$, so pairwise unit directions satisfy $v_{\sigma(i),\sigma(j)} = (v_{ij,0}, -v_{ij,1}, v_{ij,2})$.
+  Since conjugation reverses the second Pauli matrix ($\overline{v' \cdot \boldsymbol{\sigma}} = v \cdot \boldsymbol{\sigma}$), defining $\varphi_{ij} := \overline{\psi_{\sigma(i),\sigma(j)}}$ yields valid $+1$-eigenspinors for $v_{ij} \cdot \boldsymbol{\sigma}$; spinor-lift independence (Lemma~\ref{lem:chart-limit}) thus gives $D_{n+2}(\psi) = D_{n+2}(\varphi)$.
+  The Atiyah polynomials satisfy $p_i^\varphi(t) = \overline{p_{\sigma(i)}^\psi(t)}$, so rows $n$ and $n+1$ of the degree-indexed matrix $M(\varphi)$ are transposed relative to $\overline{M(\psi)}$ while columns (indexing degree $t^k$) remain unpermuted, giving $\det M(\varphi) = \mathrm{sgn}(\sigma) \overline{\det M(\psi)} = -\overline{\det M(\psi)}$.
+  Meanwhile, in the unordered product $\prod_{0 \le i < j < n+2} \omega(\varphi_{ij}, \varphi_{ji})$, $\sigma$ maps every pair except $\{n, n+1\}$ order-preservingly while inverting $\{n, n+1\}$ once to give $\omega(\overline{\psi_{n+1,n}}, \overline{\psi_{n,n+1}}) = -\overline{\omega(\psi_{n,n+1}, \psi_{n+1,n})}$.
+  The two minus signs cancel, proving $\overline{D_{n+2}(\widetilde{\mathbf{x}}_H(s))} = D_{n+2}(\widetilde{\mathbf{x}}_H(s))$, i.e.\ $\mathrm{Im}\, D_{n+2}(\widetilde{\mathbf{x}}_H(s)) = 0$ identically (\texttt{atiyahDetOfSpinors\_im\_eq\_zero\_of\_lastSwap\_yRefl}, \texttt{atiyahDet\_mirrorPairExt\_im\_eq\_zero}).
+  \item \textbf{Strict non-coplanarity for $\mathbf{x}^{(57)}(s)$:} Because $\mathbf{x}^{(57)}(s)$ contains two distinct axial points $(0,0,0), (0,0,1)$ and the off-axis point $(14650 s, 0, 177472)$ with nonzero $x$-coordinate for $s \ne 0$, adjoining $(0, \pm 1, H)$ spans all three dimensions, giving $\neg \mathrm{IsCoplanar}(\widetilde{\mathbf{x}}_H(s))$ whenever $s \ne 0$ (\texttt{not\_isCoplanar\_mirrorPairExt\_x57Path}).
+  \item \textbf{Asymptotic decoupling as $H \to +\infty$:} For every $i < n$, $v_{i,n} \to (0,0,1)$ and $v_{i,n+1} \to (0,0,1)$, while $v_{n,n+1} = (0,-1,0)$.
+  By Lemma~\ref{lem:chart-limit}, rows $n$ and $n+1$ approach degree-$n$/$(n+1)$ blocks decoupling cleanly from the top-left $n \times n$ minor, yielding $\lim_{H \to +\infty} D_{n+2}(\widetilde{\mathbf{x}}_H(s)) = D_n(\mathbf{x}(s))$ (\texttt{tendsto\_atiyahDet\_mirrorPairExt\_atTop}).
+\end{enumerate}
+Because $D_{57}(\mathbf{x}^{(57)}(0)) = 1$ and $-1 < D_{57}(\mathbf{x}^{(57)}(1)) < 0$, choosing one sufficiently large anchor $H > 0$ enforces $D_{59}(\widetilde{\mathbf{x}}_H(0)) > 0$ and $-1 < D_{59}(\widetilde{\mathbf{x}}_H(1)) < 0$; continuity along $[0, 1]$ yields an interior zero $s_0 \in (0, 1)$, proving Theorem~\ref{thm:main-3d} (\texttt{exists\_noncoplanar\_59\_violating\_conjecture\_2}, \texttt{exists\_noncoplanar\_59\_atiyahDet\_zero}).
+At $H = 10^{12}$, $60$-digit \texttt{mpmath} confirms $D_{59} \approx -0.49629962972389984453 + 6.33 \times 10^{-68} i$ (and $D_{60} \approx -0.48966766136814063695 - 9.02 \times 10^{-68} i$ on $\mathbf{x}^{(58)}(1)$).
+
+\subsection{Bounded coaxial 3D dihedral sweeps down to $n = 35$ and $\Z^3$ record $n = 46$}
+Using Eickhoff's coaxial $m$-gon ansatz (\texttt{eickhoff\_pts} and $K=3$ extension in \texttt{scripts/scan\_atiyah\_sutcliffe.py}) with bounded random-restart Nelder--Mead searches over dihedral orders $m = 1, \dots, 9$ (windows $K=2$: $n \in [31, 63]$; $K=3$: $n \in [30, 61]$ across selected $m$), we archive numerical witnesses down to $n = 35$ in \texttt{data/atiyah\_sutcliffe\_scan.json} (reported below as high-precision numerical observations beyond the Lean-formalized $n = 36$ theorem of Section~\ref{sec:3d36}):
+\begin{itemize}
+  \item \textbf{Lattice witness on $\Z^3$ at $n = 46$ ($K=2, m=4, a=25, b=13$, \texttt{n46\_3d\_m4\_integer}):} $(0,0,0..24)$, $4$-fold rings $(\pm 2000,0,36447)$, $(0,\pm 2000,36447)$ and $(\pm 42782,0,38585)$, $(0,\pm 42782,38585)$, and $(0,0,38605..38617)$ gives $60$-digit value $D_{46} \approx -1.2108619818 \times 10^9 - 2.74 \times 10^{-50} i$.
+  \item \textbf{Smallest $n$ found in this bounded scan ($n = 35$):} $K = 3, m = 5, a = 14, b = 6$ (\texttt{n\_low\_3d\_k3}) yields $D_{35} \approx -1.98163 \times 10^{16} + 5.45 \times 10^{-43} i$; $K = 2, m = 7, a = 15, b = 6$ (\texttt{n\_low\_3d\_k2}) yields $\mathrm{Re}\, D_{35} \approx -1.63886 \times 10^{12}$ with nonzero imaginary residual $\mathrm{Im}\, D_{35} \approx 0.00940$ (so only negative real part is asserted there).
+\end{itemize}
+Table~\ref{tab:coaxial-sweep} summarizes the smallest $n$ with $\mathrm{Re}\, D_n < 0$ discovered within each tested $(K, m)$ scan window.
+
+\begin{table}[h]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Smallest $n$ with $\mathrm{Re}\, D_n < 0$ and parameters $(a, b)$ found within our bounded coaxial $(K, m)$ sweeps (\texttt{data/atiyah\_sutcliffe\_scan.json}).}
+\label{tab:coaxial-sweep}
+\begin{tabular}{lccccc}
+\toprule
+Dihedral $m$ & $1$ (planar) & $2$ & $3$ & $4$ & $5$ \\
+\midrule
+$K = 2$ & $63\,(32,29)$ & $58\,(30,24)$ & $53\,(28,19)$ & $46\,(25,13)$ & $39\,(21,8)$ \\
+$K = 3$ & $57\,(27,27)$ & -- & -- & $38\,(17,9)$ & $35\,(14,6)$ \\
+\midrule
+Dihedral $m$ & $6$ & $7$ & $8$ & $9$ & \\
+\midrule
+$K = 2$ & $36\,(18,6)$ & $35\,(15,6)$ & $37\,(16,5)$ & $38\,(15,5)$ & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Hyperbolic 3-Space $\Hy^3$ Disproofs in Lean~4}\label{sec:hyperbolic}
+
+In Section~6 of~\cite{AtiyahSutcliffe2002}, Atiyah and Sutcliffe generalized their construction and conjectures to hyperbolic three-space $\Hy^3$ by replacing Euclidean chord directions $v_{ij}$ with ideal boundary endpoints $u_{ij} \in S^2 = \partial_\infty \Hy^3$ along oriented hyperbolic geodesics.
+Eickhoff~\cite[\S7]{Eickhoff2026} recently proved asymptotic existence of hyperbolic singular configurations at large unspecified $n$ via small-scale Klein transfer (which also violate C2 asymptotically via $D_n^{\Hy} = 0$).
+To obtain concrete small-$n$ bounds, direct nonzero C2 witnesses ($-1 < D_n^{\Hy} < 0$), hyperbolic C3 violations, and Lean~4 machine-checked proofs, we formalize the Beltrami--Klein unit-ball model $\B^3 = \{ q \in \R^3 : \|q\| < 1 \}$ (\texttt{KleinBallPoints}), where geodesics are straight chords and totally geodesic hyperbolic planes equal affine planes intersected with $\B^3$ (\texttt{IsHyperbolicCoplanar}).
+For $a \ne b \in \B^3$ and $v = (b - a)/\|b - a\|$, the forward ideal endpoint is (\texttt{kleinEndpoint}):
+\[
+  u(a, b) = a + \tau v \in S^2, \qquad
+  \tau = -(a \cdot v) + \sqrt{1 - \|a\|^2 + (a \cdot v)^2} > \|b - a\|.
+\]
+Because $b$ lies strictly between $a$ and $u(a, b)$ while $a$ lies strictly between $b$ and $u(b, a)$, $u(a, b) \ne u(b, a)$ holds universally (\texttt{kleinEndpoint\_ne\_swap}).
+Independent $80$-digit evaluation confirms agreement to $< 10^{-65}$ between $D_n^{\Hy}$ in $\B^3$ and Möbius gyroaddition in the Poincaré ball $\mathbb{D}^3$ ($q = 2p / (1 + \|p\|^2)$).
+
+\begin{proposition}[Infinitesimal Euclidean recovery in $\B^3$]\label{prop:hyp-limit}
+Let $\mathbf{x} \in C_n(\R^3)$. For sufficiently small $\varepsilon > 0$, $\varepsilon \mathbf{x} \in C_n(\B^3)$ (\texttt{scaleKlein}), $\varepsilon \mathbf{x}$ is geodesically coplanar in $\B^3$ iff $\mathbf{x}$ is affine coplanar in $\R^3$ (\texttt{isHyperbolicCoplanar\_scaleKlein\_iff}), and $\lim_{\varepsilon \to 0^+} D_n^{\Hy}(\varepsilon \mathbf{x}) = D_n(\mathbf{x})$ (\texttt{tendsto\_rawScaledHypDet\_zero}).
+Moreover, for $n \ge 1$ and any continuous collision-free uniformly bounded planar path $\mathbf{x}(s) \in C_n(\R^3)$ on $[0, 1]$ ($y_i \equiv 0$) with $\mathrm{Re}\, D_n(\mathbf{x}(0)) > 0$, $\mathrm{Re}\, D_n(\mathbf{x}(1)) < 0$, and $|D_n(\mathbf{x}(1))| < 1$:
+(a) the exported planar theorem \texttt{hyperbolic\_planar\_c2\_and\_zero\_of\_path} returns existentially quantified configurations $q_1, q_0 \in C_n(\B^3)$ satisfying $\mathrm{IsHyperbolicCoplanar}$, $-1 < D_n^{\Hy}(q_1) < 0$, and $D_n^{\Hy}(q_0) = 0$ (whose proof realizes $q_1 = \varepsilon \mathbf{x}(1)$ and $q_0 = \varepsilon \mathbf{x}(s_0)$ for a single sufficiently small $\varepsilon > 0$ and an interior $s_0 \in (0, 1)$ by strict endpoint signs); and
+(b) if additionally $\mathbf{x}(s)$ contains three non-collinear points at $s = 1$ and at every $s \in (0, 1)$, \texttt{hyperbolic\_mirrorPair\_c2\_and\_zero\_of\_path} constructs $H > 0$, returns a non-coplanar $q_1 \in C_{n+2}(\B^3)$ with $-1 < D_{n+2}^{\Hy}(q_1) < 0$, and returns a parameter $s_0 \in [0, 1]$ with $s_0 \ne 0$ and a non-coplanar $q_0 \in C_{n+2}(\B^3)$ satisfying $D_{n+2}^{\Hy}(q_0) = 0$ (likewise strictly interior $s_0 \in (0, 1)$ from the proof via \texttt{kleinEndpoint\_yRefl} and strict endpoint signs).
+\end{proposition}
+
+Proposition~\ref{prop:hyp-limit} yields all parts of Theorem~\ref{thm:main-hyp} in Lean~4, alongside concrete $80$-/$60$-digit numerical realizations:
+\begin{itemize}
+  \item \textbf{Hyperbolic C3 at $n = 5$:} Existentially certified via \texttt{exists\_five\_planar\_hyperbolic\_violating\_conjecture\_3} ($\Hy^2$) and \texttt{exists\_five\_noncoplanar\_hyperbolic\_violating\_conjecture\_3} ($\Hy^3$). At $\varepsilon = 10^{-7}$, $\varepsilon \mathbf{x}^{(5)}$ gives $R_3^{\Hy} \approx 0.99999776100237$; lifting $p_0$ to $(1198773, 1, -320821)$ before multiplying by $\varepsilon = 10^{-7}$ gives a non-coplanar point in $\B^3$ with $R_3^{\Hy} \approx 0.99999776100245$.
+  \item \textbf{Hyperbolic C1 and C2 ($n = 57$ in $\Hy^2$, $n = 59$ in $\Hy^3$):} Scaling $\mathbf{x}^{(57)}(s)$ refutes Hyperbolic C1 and C2 in $\Hy^2$ at $n = 57$ (numerically at $\varepsilon = 10^{-11}$, $D_{57}^{\Hy} \approx -0.410244608380$), and scaling its mirror-pair extension refutes Hyperbolic C1 and C2 in strictly non-coplanar $\Hy^3$ at $n = 59$ (numerically at $\varepsilon_{xy} = 10^{-13}$, mirror height $H_{\B^3} = 0.1$, $D_{59}^{\Hy} \approx -0.495621096358 + 7.42 \times 10^{-68}i$).
+\end{itemize}
+
+\section{Formal Verification in Lean~4}
+
+All formalized proofs reside in \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffe.lean}, \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffeExtensions.lean}, and \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffe3D36.lean}, all three imported by the root module \texttt{lean/\allowbreak Matematyka.lean} and built against Lean~\texttt{v4.37.0-rc1} and Mathlib (\texttt{lake build}).
+A standalone, self-contained reproduction repository containing all Lean~4 proofs, Python/mpmath scripts, witness datasets, and this manuscript is publicly archived at \url{https://github.com/tomasztarlowski/atiyah-sutcliffe-counterexamples}.
+All three files contain zero occurrences of \texttt{sorry}, \texttt{admit}, \texttt{native\_decide}, or custom axioms, compile cleanly with zero warnings, and automated \texttt{\#print axioms} auditing confirms that all exported declarations depend exclusively on \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
+Table~\ref{tab:lean-theorems} lists the principal witness and refutation declarations with their exact logical scope.
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{Principal Lean~4 declarations verified in \texttt{Matematyka.AtiyahSutcliffe}, \texttt{AtiyahSutcliffeExtensions}, and \texttt{AtiyahSutcliffe3D36}.}
+\label{tab:lean-theorems}
+\begin{tabular}{>{\ttfamily\raggedright\arraybackslash}p{0.51\textwidth}>{\raggedright\arraybackslash}p{0.44\textwidth}}
+\toprule
+\textrm{Lean Declaration} & Statement Formalized \\
+\midrule
+exists\_five\_planar\_points\_violating\_conjecture\_3 & Existential $x \in C_5(\R^3)$ violating C3 (witnessed by planar integer $\mathbf{x}^{(5)}$) \\
+disproof\_atiyah\_sutcliffe\_conjecture\_3 & Negation $\neg \mathrm{AtiyahSutcliffeConjecture3Prop}$ ($n \ge 3$) \\
+exists\_five\_noncoplanar\_points\_violating\_conjecture\_3 & Existential non-coplanar ($\neg \mathrm{IsCoplanar}$) $n = 5$ C3 witness \\
+x57Path\_one\_re\_neg\_and\_norm\_lt\_one & Explicit integer $\mathbf{x}^{(57)}(1)$ satisfies $-1 < D_{57} < 0$ ($S_{57}=10^{40}$) \\
+exists\_planar\_57\_violating\_conjecture\_2 & Existential $x \in C_{57}(\R^3)$ with $|D_{57}| < 1$ (proved via $\mathbf{x}^{(57)}(1)$) \\
+exists\_planar\_57\_atiyahDet\_zero & Existential $x \in C_{57}(\R^3)$ with $D_{57} = 0$ (proved via IVT along $\mathbf{x}^{(57)}$) \\
+x63Path\_one\_norm\_lt\_one & Explicit integer $\mathbf{x}^{(63)}(1)$ satisfies $|D_{63}| < 1$ ($S_{63}=10^{35}$) \\
+det\_stereoMat\_eq\_even\_odd & Antipodal parity factorization $36 \to 18 \times 18$ (\texttt{x36Clamp}) \\
+det\_18\_eq\_det\_6 & Exact $18 \to 6$ axial elimination on both parity blocks \\
+exists\_noncoplanar\_3d\_36\_atiyahDet\_neg & Existential non-coplanar (\texttt{Noncoplanar3D}) $n = 36$ with $\mathrm{Re}\, D_{36} < 0$, $\mathrm{Im}\, D_{36} = 0$ \\
+exists\_noncoplanar\_3d\_36\_atiyahDet\_zero & Existential \texttt{Noncoplanar3D} $n = 36$ with $D_{36} = 0$ (proved via IVT on $[9, 10]$) \\
+disproof\_atiyah\_det\_nonzero\_3d\_36 & Non-coplanar 3D $n = 36$ refutation $\neg \mathrm{AtiyahDetNonzeroProp}$ \\
+disproof\_atiyah\_conjecture\_1\_3d\_36 & Non-coplanar 3D $n = 36$ refutation $\neg \mathrm{AtiyahConjecture1Prop}$ \\
+disproof\_atiyah\_sutcliffe\_conjecture\_2\_3d\_36 & Non-coplanar 3D $n = 36$ refutation $\neg \mathrm{AtiyahSutcliffeConjecture2Prop}$ \\
+exists\_noncoplanar\_59\_violating\_conjecture\_2 & Existential non-coplanar $n = 59$ witness with $-1 < D_{59} < 0$ \\
+exists\_noncoplanar\_59\_atiyahDet\_zero & Existential non-coplanar $n = 59$ witness with $D_{59} = 0$ \\
+exists\_five\_planar\_hyperbolic\_violating\_conjecture\_3 & Existential $\Hy^2$ $n = 5$ witness violating Hyperbolic C3 \\
+exists\_five\_noncoplanar\_hyperbolic\_violating\_conjecture\_3 & Existential non-coplanar $\Hy^3$ $n = 5$ witness violating Hyperbolic C3 \\
+disproof\_hyperbolic\_atiyah\_sutcliffe\_conjecture\_3 & Negation $\neg \mathrm{HyperbolicAtiyahSutcliffeConjecture3Prop}$ \\
+exists\_planar\_57\_hyperbolic\_atiyahDet\_zero & Existential $\Hy^2$ $n = 57$ witness with $D_{57}^{\Hy} = 0$ \\
+exists\_noncoplanar\_59\_hyperbolic\_violating\_conjecture\_2 & Existential non-coplanar $\Hy^3$ $n = 59$ with $|D_{59}^{\Hy}| < 1$ \\
+exists\_noncoplanar\_59\_hyperbolic\_atiyahDet\_zero & Existential non-coplanar $\Hy^3$ $n = 59$ with $D_{59}^{\Hy} = 0$ \\
+disproof\_hyperbolic\_atiyah\_det\_nonzero & Negation $\neg \mathrm{HyperbolicAtiyahDetNonzeroProp}$ \\
+disproof\_hyperbolic\_atiyah\_conjecture\_1 & Negation $\neg \mathrm{HyperbolicAtiyahConjecture1Prop}$ \\
+disproof\_hyperbolic\_atiyah\_sutcliffe\_conjecture\_2 & Negation $\neg \mathrm{HyperbolicAtiyahSutcliffeConjecture2Prop}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\clearpage
+\subsection*{Acknowledgments and AI Disclosure}
+Computational witness discovery, Lean~4 proof engineering, and manuscript drafting were carried out in an interactive human--AI research workflow using Gemini, Claude, and OpenAI Codex models.
+All formal theorems are machine-checked by the Lean~4 kernel (\texttt{v4.37.0-rc1} + Mathlib) with zero \texttt{sorry}, zero \texttt{native\_decide}, and standard axioms \texttt{\{propext, Classical.choice, Quot.sound\}} only, and all reported numerical quantities were independently verified in $60$- and $80$-digit \texttt{mpmath} arithmetic.
+
+\begin{thebibliography}{10}
+
+\bibitem{Akhtyamov2026}
+A.~Akhtyamov,
+\emph{Formal disproof of Atiyah--Sutcliffe Conjecture~1 in Lean~4},
+GitHub repository \url{https://github.com/azakhtyamov/atiyah-sutcliffe-disproof} and pull request \texttt{google-deepmind/formal-conjectures\#6966} (October 2026).
+
+\bibitem{Atiyah2001}
+M.~F.~Atiyah,
+\emph{Configurations of points},
+Phil. Trans. R. Soc. Lond. A \textbf{359} (2001), 1375--1387.
+
+\bibitem{AtiyahSutcliffe2002}
+M.~F.~Atiyah and P.~Sutcliffe,
+\emph{The geometry of point particles},
+Proc. R. Soc. Lond. A \textbf{458} (2002), 1089--1115.
+
+\bibitem{BouKhuzamJohnson2014}
+M.~N.~Bou~Khuzam and M.~J.~Johnson,
+\emph{On the conjectures regarding the $4$-point Atiyah determinant},
+SIGMA \textbf{10} (2014), 070, 9 pages (\texttt{arXiv:1401.2787}).
+
+\bibitem{Djokovic2002}
+D.~\v{Z}.~\DJ okovi\'c,
+\emph{Proof of Atiyah's conjecture for two special types of configurations},
+Electron. J. Linear Algebra \textbf{9} (2002), 132--137 (\texttt{arXiv:math/0205221}).
+
+\bibitem{EastwoodNorbury2001}
+M.~G.~Eastwood and P.~Norbury,
+\emph{A proof of Atiyah's conjecture on configurations of four points in Euclidean three-space},
+Geom. Topol. \textbf{5} (2001), 885--893 (\texttt{arXiv:math/0109161}).
+
+\bibitem{Eickhoff2026}
+J.~Eickhoff,
+\emph{Singular Atiyah Configurations},
+preprint \texttt{arXiv:2610.33090} (2026).
+
+\bibitem{Malkoun2025}
+J.~Malkoun,
+\emph{Finite graphs and configurations of points},
+preprint \texttt{arXiv:2508.13472} (2025).
+
+\bibitem{MazurPetrenko2011}
+M.~Mazur and B.~V.~Petrenko,
+\emph{On the conjectures of Atiyah and Sutcliffe},
+Geom. Dedicata \textbf{158} (2012), 329--342 (\texttt{arXiv:1102.4662}).
+
+\end{thebibliography}
+
+\end{document}
