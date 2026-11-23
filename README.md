@@ -5,7 +5,7 @@
 Machine-checked **Lean 4 (`v4.37.0-rc1` + Mathlib)** counterexamples, continuous homotopies, and high-precision (`60`–`80` digit `mpmath`) numerical certificates refuting all three classical Atiyah–Sutcliffe conjectures (2001/2002) in Euclidean space $C_n(\mathbb{R}^3)$ and hyperbolic space $C_n(\mathbb{H}^3)$.
 
 - **Preprint manuscript:** [`paper/atiyah_sutcliffe_counterexamples.tex`](paper/atiyah_sutcliffe_counterexamples.tex) ([compiled PDF](paper/atiyah_sutcliffe_counterexamples.pdf), 17 pages)
-- **Zenodo archive (Concept DOI — always latest version):** https://doi.org/10.5281/zenodo.24443573
+- **Zenodo archive:** https://doi.org/10.5281/zenodo.24443573 (Concept DOI — always latest version; `v1.1.0`: https://doi.org/10.5281/zenodo.24476029)
 - **Axiom purity:** All Lean 4 modules contain **zero** `sorry`, **zero** `admit`, **zero** `native_decide` (the $n = 26$ module uses kernel-only `decide +kernel`), and depend strictly on standard Lean axioms `{propext, Classical.choice, Quot.sound}`.
 
 ---
