@@ -8,14 +8,16 @@ project:
     (C1, C2, and C3, 2001/2002) in both Euclidean 3-space C_n(R^3) and hyperbolic 3-space
     C_n(H^3) via explicit integer witnesses, continuous homotopies, parity block Schur reductions,
     and kernel-checked fixed-point interval arithmetic (zero sorry, zero admit, zero native_decide,
-    standard axioms {propext, Quot.sound, Classical.choice} only). Establishes: (1) the sharp
-    minimal n = 5 refutation of Euclidean Conjecture 3 both in R^2 and non-coplanar R^3; (2)
-    planar n = 57 (K = 3) and n = 63 (K = 2) sign reversals and direct nonzero C2 violations
-    (-1 < D_n < 0) via kernel Gaussian elimination and denominator folding; (3) genuinely non-
-    coplanar 3D C1/C2 disproofs lowered to n = 36 via coaxial Pythagorean (33, 56, 65) rings
-    (D_36(9) > 0 > D_36(10), Im D_36 = 0, IVT root D_36 = 0), complemented by mirror-pair
-    n = 59 witnesses; and (4) the first machine-checked hyperbolic H^3 refutations of C3 (n = 5)
-    and C1/C2 (n = 57 in H^2, n = 59 in H^3) via the Beltrami–Klein ball limit.
+    standard axioms {propext, Quot.sound, Classical.choice} only). Establishes: (1) a Lean 4
+    refutation of Euclidean Conjecture 3 at the minimal n = 5 both in R^2 and non-coplanar R^3
+    (planar failure first announced by Tan–Zhang, Oct 2026); (2) planar n = 57 (K = 3) and n = 63
+    (K = 2) sign reversals and direct nonzero C2 violations (-1 < D_n < 0) via kernel Gaussian
+    elimination and denominator folding; (3) genuinely non-coplanar 3D C1/C2 disproofs lowered to
+    n = 36 via coaxial Pythagorean (33, 56, 65) rings (D_36(9) > 0 > D_36(10), IVT root D_36 = 0)
+    and further down to n = 26 via a mirror-symmetric integer family and 26 x 26 certified complex
+    Gaussian elimination (D_26(8) > 0 > D_26(10), staged decide +kernel checks), complemented by
+    mirror-pair n = 59 witnesses; and (4) the first machine-checked hyperbolic H^3 refutations of C3
+    (n = 5) and C1/C2 (n = 57 in H^2, n = 59 in H^3) via the Beltrami–Klein ball limit.
   authors:
     - "Tomasz Tarłowski"
   responsible_maintainers:
@@ -31,14 +33,27 @@ sources:
   - title: "Explicit Finite Counterexamples to the Euclidean and Hyperbolic Atiyah–Sutcliffe Conjectures"
     authors:
       - "Tomasz Tarłowski"
-    id: "https://github.com/tomasztarlowski/atiyah-sutcliffe-counterexamples/blob/main/paper/atiyah_sutcliffe_counterexamples.pdf"
+    id: "https://doi.org/10.5281/zenodo.24443573"
     type: "paper"
     relationship: "formalizes"
     note: >-
-      Companion 15-page preprint by the author detailing the n = 5 sharp C3 refutation, K = 3
-      planar n = 57 witness, non-coplanar 3D n = 36 Pythagorean construction, n = 59 mirror-pair
-      C2 witness, and Beltrami–Klein hyperbolic transfer.
+      Companion 17-page preprint archived on Zenodo (Concept DOI 10.5281/zenodo.24443573) and GitHub,
+      detailing the n = 5 C3 refutation, K = 3 planar n = 57 witness, non-coplanar 3D n = 36 Pythagorean
+      and n = 26 mirror-symmetric constructions, n = 59 mirror-pair C2 witness, and Beltrami–Klein
+      hyperbolic transfer.
     author_endorsement: "participated"
+  - title: "The Atiyah–Sutcliffe determinant at five points: positivity and failure of the deletion inequality"
+    authors:
+      - "H. Tan"
+      - "Y. Zhang"
+    id: "https://doi.org/10.5281/zenodo.23142909"
+    type: "paper"
+    relationship: "background"
+    note: >-
+      Zenodo preprint (4 Oct 2026) proving Re D_5 >= 5/768 (C1 at n = 5) and announcing the first
+      planar integer counterexample to Conjecture 3 at n = 5 via rational interval arithmetic;
+      predates this repository and is credited accordingly.
+    author_endorsement: "not-contacted"
   - title: "Configurations of points"
     authors:
       - "Michael F. Atiyah"
@@ -75,14 +90,14 @@ related_formalizations:
     relationship: "independent"
     note: >-
       Independent Lean 4 formalization of Euclidean C1 at n = 46 using unnormalized determinants;
-      this repository formalizes normalized D_n, lowers 3D C1/C2 to n = 36, adds C3 at n = 5,
-      direct nonzero C2 witnesses, and hyperbolic H^3 disproofs.
+      this repository formalizes normalized D_n, lowers 3D C1/C2 to n = 36 and n = 26, adds a Lean 4
+      C3 proof at n = 5, direct nonzero C2 witnesses, and hyperbolic H^3 disproofs.
 
 status:
   scope: >-
-    Formalized unconditionally: Euclidean C3 refutation (sharp n = 5 planar & 3D), Euclidean
-    C1 & C2 refutations (planar n = 57, 63; non-coplanar 3D n = 36, 59), and Hyperbolic H^2/H^3
-    refutations of C3 (n = 5) and C1/C2 (n = 57, 59). Exact minimal C1/C2 threshold in 5 <= n <= 35
+    Formalized unconditionally: Euclidean C3 refutation (n = 5 planar & 3D), Euclidean C1 & C2
+    refutations (planar n = 57, 63; non-coplanar 3D n = 26, 36, 59), and Hyperbolic H^2/H^3
+    refutations of C3 (n = 5) and C1/C2 (n = 57, 59). Exact minimal C1/C2 threshold in 6 <= n <= 25
     remains open.
   sorry_count: 0
   sorry_in_definitions: 0
@@ -107,7 +122,8 @@ review:
   status: "self-assessed"
   notes: >-
     Verified locally by the author against Lean 4 v4.37.0-rc1 + Mathlib with zero sorry, zero admit,
-    zero native_decide, and strict Comparator type/axiom checking of Challenge vs Solution.
+    zero native_decide (AtiyahSutcliffe3D26.lean uses kernel-only decide +kernel), and strict Comparator
+    type/axiom checking of Challenge vs Solution.
 
 acknowledgements: >-
-  Lean 4 and Mathlib contributors, Paul Sutcliffe, Jan Eickhoff, and Azat Akhtyamov.
+  Lean 4 and Mathlib contributors, Paul Sutcliffe, Jan Eickhoff, Azat Akhtyamov, and H. Tan & Y. Zhang.

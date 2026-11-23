@@ -5,11 +5,11 @@ import Mathlib
 
 This lightweight Challenge module declares the Euclidean (`C_n(ℝ³)`) and hyperbolic
 (`C_n(ℍ³)` via the Beltrami–Klein ball `B³`) Atiyah–Sutcliffe normalized determinant,
-linear-independence / modulus / geometric-mean conjectures (C1, C2, C3), and 12 headline
+linear-independence / modulus / geometric-mean conjectures (C1, C2, C3), and 13 headline
 disproof theorems covering:
-- Sharp Euclidean C3 refutation at `n = 5`;
-- Planar (`n = 57, 63`) and strictly non-coplanar 3D (`n = 36` via coaxial Pythagorean rings and
-  `n = 59` via mirror-pair extension) refutations of Euclidean C1 and C2;
+- Euclidean C3 refutation at `n = 5` (planar failure first announced by Tan–Zhang, Oct 2026);
+- Planar (`n = 57, 63`) and strictly non-coplanar 3D (`n = 26` mirror-symmetric family,
+  `n = 36` via coaxial Pythagorean rings, and `n = 59` via mirror-pair extension) refutations of Euclidean C1 and C2;
 - Hyperbolic (`ℍ²` & `ℍ³`) refutations of C3 (`n = 5`) and C1/C2 (`n = 57, 59`).
 
 Proofs are supplied in `Solution.lean` and audited using strictly `{propext, Quot.sound, Classical.choice}`.
@@ -175,6 +175,11 @@ theorem disproof_atiyah_conjecture_1 : ¬ AtiyahConjecture1Prop := by
 
 /-- Disproof of Euclidean Atiyah–Sutcliffe Conjecture 2 (`|D_n| ≥ 1`). -/
 theorem disproof_atiyah_sutcliffe_conjecture_2 : ¬ AtiyahSutcliffeConjecture2Prop := by
+  sorry
+
+/-- Genuinely non-coplanar 3D `n = 26` singular configuration (`D_26 = 0`) from the mirror-symmetric `x26Clamp` family. -/
+theorem exists_noncoplanar_3d_26_atiyahDet_zero :
+    ∃ x : DistinctPoints 26, Noncoplanar3D x.1 ∧ atiyahDet x = 0 := by
   sorry
 
 /-- Genuinely non-coplanar 3D `n = 36` singular configuration (`D_36 = 0`) from coaxial Pythagorean `(33,56,65)` rings. -/

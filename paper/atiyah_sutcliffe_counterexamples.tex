@@ -29,16 +29,16 @@
 
 \title[Atiyah--Sutcliffe Counterexamples]{Explicit Finite Counterexamples to the Euclidean and Hyperbolic Atiyah--Sutcliffe Conjectures}
 \author{Tomasz Tar\l owski}
-\date{November 22, 2026}
+\date{November 23, 2026}
 \subjclass[2020]{Primary 51M15, 70G45; Secondary 81Q70, 68V20}
 
 \begin{document}
 
 \begin{abstract}
-We present explicit witnesses, continuous families, and Lean~4 proofs refuting all three classical Atiyah--Sutcliffe conjectures (2001/2002) in Euclidean space $C_n(\mathbb{R}^3)$ and hyperbolic space $C_n(\mathbb{H}^3)$.
-First, we refute Euclidean Conjecture~3 at the sharp minimal $n = 5$ via a planar integer witness $\mathbf{x}^{(5)} \in C_5(\mathbb{R}^2)$ ($R_3 \approx 0.999996368278 < 1$), together with an existentially certified non-coplanar perturbation in $C_5(\mathbb{R}^3)$.
-Second, using certified Gaussian elimination and denominator folding in Lean~4, we improve our planar sign-reversal record from $n = 63$ ($K = 2$) to a three-orbit family $\mathbf{x}^{(57)}(s) \in C_{57}(\mathbb{R}^2)$ ($K = 3$), certifying $-1 < D_{57}(\mathbf{x}^{(57)}(1)) < 0$ ($\approx -0.498322$) and $D_{57}(\mathbf{x}^{(57)}(s_0)) = 0$ on $(0, 1)$, alongside $|D_{63}(\mathbf{x}^{(63)}(1))| < 1$.
-Third, in non-coplanar $\mathbb{R}^3$, we certify a $36$-point two-ring Pythagorean $(33,56,65)$ family via $36 \to 18 \times 18 \to 6 \times 6$ block reduction and interval arithmetic ($D_{36}(9) > 0 > D_{36}(10)$), yielding a singular zero $D_{36} = 0$ (refuting C1 and C2 at $n = 36$), complement it with a $59$-point mirror-pair extension certifying non-coplanar $-1 < D_{59} < 0$ and $D_{59} = 0$, and report numerical coaxial sweeps down to $n = 35$ ($\mathbb{R}^3$) and $n = 46$ ($\mathbb{Z}^3$).
+We present explicit finite witnesses, continuous families, and Lean~4 proofs refuting all three classical Atiyah--Sutcliffe conjectures (2001/2002) in Euclidean space $C_n(\mathbb{R}^3)$ and hyperbolic space $C_n(\mathbb{H}^3)$.
+First, we formalize a Lean~4 disproof of Euclidean Conjecture~3 at the minimal $n = 5$ via a planar integer witness $\mathbf{x}^{(5)} \in C_5(\mathbb{R}^2)$ ($R_3 \approx 0.999996368278 < 1$; planar failure first announced by Tan--Zhang, Oct.~2026) together with a certified non-coplanar perturbation in $C_5(\mathbb{R}^3)$.
+Second, using certified Gaussian elimination and denominator folding in Lean~4, we construct a three-orbit planar family $\mathbf{x}^{(57)}(s) \in C_{57}(\mathbb{R}^2)$ ($K = 3$) certifying $-1 < D_{57}(\mathbf{x}^{(57)}(1)) < 0$ ($\approx -0.498322$) and $D_{57}(\mathbf{x}^{(57)}(s_0)) = 0$ on $(0, 1)$, alongside $|D_{63}(\mathbf{x}^{(63)}(1))| < 1$ ($K = 2$).
+Third, in non-coplanar $\mathbb{R}^3$, we certify a $36$-point coaxial Pythagorean $(33,56,65)$ family via $36 \to 18 \times 18 \to 6 \times 6$ block reduction ($D_{36}(9) > 0 > D_{36}(10)$), a $59$-point mirror-pair extension with $-1 < D_{59} < 0$ and $D_{59} = 0$, and---dropping rotational symmetry---a mirror-symmetric $26$-point integer family certified via $26 \times 26$ complex Gaussian elimination ($D_{26}(8) > 0 > D_{26}(10)$), lowering the Lean-certified C1/C2 threshold to $n = 26$ (with numerical witnesses for all $26 \le n \le 35$).
 Fourth, formalizing the Beltrami--Klein model $C_n(\mathbb{B}^3) \cong C_n(\mathbb{H}^3)$ and $\lim_{\varepsilon \to 0^+} D_n^{\mathbb{H}}(\varepsilon \mathbf{x}) = D_n(\mathbf{x})$, we prove Hyperbolic C3 false at $n = 5$ ($\mathbb{H}^2, \mathbb{H}^3$) and Hyperbolic C1--C2 false at $n = 57$ ($\mathbb{H}^2$) and $n = 59$ ($\mathbb{H}^3$).
 \end{abstract}
 
@@ -80,7 +80,7 @@ Independently in October~2026, Akhtyamov~\cite{Akhtyamov2026} formalized a dispr
 Also in October~2026, Tan and Zhang~\cite{TanZhang2026} announced that $\operatorname{Re} D_5 \ge 5/768$ for every five-point configuration (hence C1 holds for $n = 5$) and exhibited a planar integer five-point configuration violating Conjecture~3, certified by rational interval arithmetic, noting that five is the smallest cardinality at which C3 can fail.
 Their preprint predates the present work; our five-point witness in Section~\ref{sec:n5} was found without knowledge of it, and we make no priority claim for the failure of Euclidean C3.
 
-By contrast, our Lean-formalized theorems construct the normalized determinant $D_n(\mathbf{x})$ directly and provide a Lean~4 proof that Conjecture~3 fails at the minimal $n = 5$ (planar, and strictly non-coplanar; the planar failure was first announced in~\cite{TanZhang2026}), lower the Lean-certified 3D C1/C2 threshold from $n = 46$ down to $n = 36$, certify direct nonzero C2 counterexamples with $-1 < D_n < 0$ at $n = 57, 63$ (planar) and $n = 59$ (strictly non-coplanar), and establish the first Lean-certified disproofs of Hyperbolic Conjectures~1, 2, and~3 in $\Hy^3$:
+By contrast, our Lean-formalized theorems construct the normalized determinant $D_n(\mathbf{x})$ directly and provide a Lean~4 proof that Conjecture~3 fails at the minimal $n = 5$ (planar, and strictly non-coplanar; the planar failure was first announced in~\cite{TanZhang2026}), lower the Lean-certified 3D C1/C2 threshold from $n = 46$ down to $n = 36$ (two-ring family) and further to $n = 26$ (mirror-symmetric family, Section~\ref{sec:3d26}), certify direct nonzero C2 counterexamples with $-1 < D_n < 0$ at $n = 57, 63$ (planar) and $n = 59$ (strictly non-coplanar), and establish the first Lean-certified disproofs of Hyperbolic Conjectures~1, 2, and~3 in $\Hy^3$:
 
 \begin{theorem}[Sharp Euclidean C3 disproof at $n = 5$, planar and non-coplanar]\label{thm:main-c3}
 Let $\mathbf{x}^{(5)} \in C_5(\R^2) \subset C_5(\R^3)$ be the explicit $5$-point planar integer configuration defined in Section~\ref{sec:n5}.
@@ -103,11 +103,12 @@ In Lean~4:
 In particular, using $K = 3$ strictly positive-$x$ off-axis points strictly improves upon our $K = 2, m = 1$ planar realization ($n = 57 < 63$).
 \end{theorem}
 
-\begin{theorem}[Strictly non-coplanar 3D refutations of C1 and C2 at $n = 36$ and $n = 59$]\label{thm:main-3d}
-In strictly non-coplanar Euclidean three-space, Lean~4 certifies two complementary families refuting Conjectures~1 and~2:
+\begin{theorem}[Strictly non-coplanar 3D refutations of C1 and C2 at $n = 26$, $n = 36$ and $n = 59$]\label{thm:main-3d}
+In strictly non-coplanar Euclidean three-space, Lean~4 certifies three complementary families refuting Conjectures~1 and~2:
 \begin{enumerate}
   \item At $n = 36$, the explicit two-ring Pythagorean $(33, 56, 65)$ family $\mathbf{x}^{(36)}(t) \in C_{36}(\R^3)$ (\texttt{x36Clamp}, Section~\ref{sec:3d36}) is strictly non-coplanar (\texttt{Noncoplanar3D}) for every $t \in \R$, satisfies $\mathrm{Im}\, D_{36}(\mathbf{x}^{(36)}(t)) = 0$ identically, and undergoes a Lean-certified sign reversal $D_{36}(\mathbf{x}^{(36)}(9)) > 0 > D_{36}(\mathbf{x}^{(36)}(10))$ via complex interval arithmetic at scale $S_{36} = 10^{18}$. Continuity yields an interior zero $t_0 \in (9, 10)$ with $D_{36}(\mathbf{x}^{(36)}(t_0)) = 0$ (numerically $t_0 \approx 9.392050$), refuting both C1 and C2 at $n = 36$.
   \item At $n = 59$, appending a symmetric mirror pair $(0, \pm 1, H)$ to $\mathbf{x}^{(57)}(s)$ preserves $\mathrm{Im}\, D_{59} = 0$, enforces strict non-coplanarity ($\neg \mathrm{IsCoplanar}$) whenever $s \ne 0$, and converges to $D_{57}(\mathbf{x}^{(57)}(s))$ as $H \to +\infty$. Consequently, for sufficiently large $H > 0$, Lean~4 certifies strictly non-coplanar configurations in $C_{59}(\R^3)$ satisfying both $-1 < D_{59} < 0$ (directly refuting C2 with $D_{59} \ne 0$) and $D_{59} = 0$ (refuting C1).
+  \item At $n = 26$, the explicit mirror-symmetric integer family $\mathbf{x}^{(26)}(t) \in C_{26}(\R^3)$ (\texttt{x26Clamp}, Section~\ref{sec:3d26}) is strictly non-coplanar (\texttt{Noncoplanar3D}) for every $t \in \R$, satisfies $\mathrm{Im}\, D_{26}(\mathbf{x}^{(26)}(t)) = 0$ identically, and undergoes a Lean-certified sign reversal $D_{26}(\mathbf{x}^{(26)}(8)) > 0 > D_{26}(\mathbf{x}^{(26)}(10))$ via complex interval arithmetic at scale $S_{26} = 10^{30}$. Continuity yields an interior zero $t_0 \in (8, 10)$ with $D_{26}(\mathbf{x}^{(26)}(t_0)) = 0$ (numerically $t_0 \approx 8.289031$), refuting both C1 and C2 at $n = 26$.
 \end{enumerate}
 \end{theorem}
 
@@ -123,7 +124,7 @@ Note that while $n = 5$ matches the sharp Euclidean C3 threshold, whether Hyperb
 
 \begin{remark}[Scope relative to Malkoun's graph generalization]
 Malkoun~\cite{Malkoun2025} introduced a graph-theoretic extension $A_G(\mathbf{x})$ for arbitrary simple graphs $G$ on $n$ vertices (with $G = K_n$ recovering $D_n$ up to normalization).
-This paper and the Lean~4 modules \texttt{AtiyahSutcliffe.lean}, \texttt{AtiyahSutcliffeExtensions.lean}, and \texttt{AtiyahSutcliffe3D36.lean} strictly treat the classical complete-graph conjectures C1--C3 on $C_n(\R^3)$ and $C_n(\Hy^3)$.
+This paper and the Lean~4 modules \texttt{AtiyahSutcliffe.lean}, \texttt{AtiyahSutcliffeExtensions.lean}, \texttt{AtiyahSutcliffe3D36.lean}, and \texttt{AtiyahSutcliffe3D26.lean} strictly treat the classical complete-graph conjectures C1--C3 on $C_n(\R^3)$ and $C_n(\Hy^3)$.
 \end{remark}
 
 \section{Ordered Planar Formula and Chart-Independent Limit Theorem}
@@ -260,7 +261,7 @@ Even restricting to $m = 1$ planar configurations with all off-axis points on $x
 With $K = 2, m = 2$, taking $a = 30$ lower axial points $(0,0,0..29)$, four off-axis points $(-4536,0,62866)$, $(4536,0,62867)$, $(-107802,0,66640)$, $(107802,0,66641)$, and $b = 24$ upper axial points $(0,0,66660..66683)$ defines a $58$-point planar integer family $\mathbf{x}^{(58)}(s)$ whose endpoint numerically satisfies $D_{58}(\mathbf{x}^{(58)}(1)) \approx -0.505421925599$ with homotopy zero $s_0 \approx 0.999969508354$.
 \end{remark}
 
-\section{Strictly Non-Coplanar 3D Disproofs ($n = 36$ and $n = 59$) and Coaxial Sweeps}\label{sec:3d}
+\section{Strictly Non-Coplanar 3D Disproofs ($n = 26$, $n = 36$, and $n = 59$) and Small-$n$ Sweeps}\label{sec:3d}
 
 \subsection{Lean-certified Pythagorean two-ring 3D disproof at $n = 36$}\label{sec:3d36}
 To lower the Lean-certified strictly non-coplanar 3D threshold directly (improving by $10$ points on the $46$-point helical C1 disproof of~\cite{Akhtyamov2026} while also certifying normalized $D_{36} = 0$ for C2) without asymptotic mirror lifting, \texttt{AtiyahSutcliffe3D36.lean} constructs the explicit $36$-point two-ring Pythagorean family $\mathbf{x}^{(36)}(t) \in C_{36}(\R^3)$ (\texttt{x36Clamp}), rescaling base integer points \texttt{x36BaseArr} horizontally by $\max(t, 1)$ while holding heights $z_i$ fixed:
@@ -280,6 +281,21 @@ By dilation invariance of $D_n$, dividing all coordinates by $10$ reproduces the
   \item \textbf{Exact axial elimination $18 \to 6$:} In both \texttt{evenMat18} and \texttt{oddMat18}, rows corresponding to the lower and upper axial blocks satisfy triangularity with unit diagonals, reducing each $18 \times 18$ determinant identically to a $6 \times 6$ Schur complement \texttt{reduce18To6C} along pivot schedule $[0,\dots,8,17,16,15]$ (\texttt{det\_18\_eq\_det\_6}).
   \item \textbf{Complex interval sign change and IVT zero:} Using outward-rounded complex fixed-point intervals \texttt{CFpIv} at scale $S_{36} = 10^{18}$ (with kernel-verified $9$-stage polynomial evaluation checkpoints and Laplace $6 \times 6$ determinants \texttt{prod9Cert}, \texttt{prod10Cert}), Lean's kernel certifies $D_{36}(\mathbf{x}^{(36)}(9)) > 0$ (\texttt{atiyahDet\_x36Clamp\_9\_re\_pos}) and $D_{36}(\mathbf{x}^{(36)}(10)) < 0$ (\texttt{atiyahDet\_x36Clamp\_10\_re\_neg}, \texttt{exists\_noncoplanar\_3d\_36\_atiyahDet\_neg}). Independent $80$-digit \texttt{mpmath} evaluation yields $D_{36}(9) \approx +4.4639441897 \times 10^{11}$ and $D_{36}(10) \approx -1.3361590585 \times 10^{11}$, with root $t_0 \approx 9.392049935734$. By the Intermediate Value Theorem on $[9, 10]$, Lean~4 certifies a strictly non-coplanar zero $D_{36}(\mathbf{x}^{(36)}(t_0)) = 0$ (\texttt{exists\_noncoplanar\_3d\_36\_atiyahDet\_zero}), proving \texttt{disproof\_atiyah\_det\_nonzero\_3d\_36}, \texttt{disproof\_atiyah\_conjecture\_1\_3d\_36}, and \texttt{disproof\_atiyah\_sutcliffe\_conjecture\_2\_3d\_36}.
 \end{enumerate}
+
+\subsection{Lean-certified mirror-symmetric 3D disproof at $n = 26$}\label{sec:3d26}
+The coaxial families above carry a cyclic symmetry, which is what makes the block reduction of Section~\ref{sec:3d36} possible but also constrains the search. Starting from the numerical $K = 2$, $m = 7$ witness at $n = 35$, we released all parameters while keeping only the reflection $y \mapsto -y$ (which still forces $D_n \in \R$), and alternated local minimization of $\mathrm{Re}\, D_n$ (normalized by the Hadamard bound of the evaluation matrix) with deletions of points and same-$n$ exchanges between tight collinear clusters and free points (\texttt{scripts/atiyah\_small\_n/}). The rings deform and the axial clusters gradually dissolve; the search produced mirror-symmetric configurations with $D_n < 0$ for every $26 \le n \le 34$ (integer witnesses with $60$-digit \texttt{mpmath} values in \texttt{data/atiyah\_small\_n\_witnesses.json}) and stalled at $n = 26$.
+
+For the Lean certificate we use the following $26$ integer base points $(X_i, Y_i, Z_i)$, listed in $z$-monotone order:
+\begin{quote}\small
+$(-65,0,0)$, $(-76,0,36)$, $(-105,0,65)$, $(-53,0,247)$, $(-23,0,994)$, $(8,0,1537)$, $(-275,-234,1778)$, $(-275,234,1778)$, $(37,-23,2189)$, $(37,23,2189)$, $(100,0,3124)$, $(26,-47,3221)$, $(26,47,3221)$, $(45,0,3314)$, $(-7,-5,3318)$, $(-7,5,3318)$, $(5,-14,3377)$, $(5,14,3377)$, $(-5,0,3390)$, $(0,-5,3412)$, $(0,5,3412)$, $(-1,0,3421)$, $(15,0,3423)$, $(0,0,3430)$, $(-385,-360,3467)$, $(-385,360,3467)$.
+\end{quote}
+Seven mirror pairs $(X, \pm Y, Z)$ occupy the index pairs $(6,7)$, $(8,9)$, $(11,12)$, $(14,15)$, $(16,17)$, $(19,20)$, $(24,25)$; the remaining twelve points lie in the plane $y = 0$. The family is $\mathbf{x}^{(26)}(t)_i = (\max(t,1) X_i, \max(t,1) Y_i, Z_i)$ (\texttt{x26Clamp}). In $60$-digit arithmetic $D_{26}(\mathbf{x}^{(26)}(8)) \approx 1.2185 \times 10^{12}$ and $D_{26}(\mathbf{x}^{(26)}(10)) \approx -3.6345 \times 10^{12}$, with a sign change at $t_0 \approx 8.289031$. The Lean module \texttt{AtiyahSutcliffe3D26.lean} verifies:
+\begin{enumerate}
+  \item \textbf{Non-coplanarity, reality, and continuity:} four affinely independent base points give \texttt{Noncoplanar3D} for every $t$; the permutation \texttt{reflectPerm26} swapping the seven mirror pairs, permutation invariance of $D_n$ and conjugation of stereographic slopes give $\mathrm{Im}\, D_{26}(\mathbf{x}^{(26)}(t)) = 0$; continuity of $t \mapsto \mathrm{Re}\, D_{26}(\mathbf{x}^{(26)}(t))$ follows as in Section~\ref{sec:3d36}.
+  \item \textbf{Certified complex Gaussian elimination:} without rotational symmetry no block reduction is available, so we enclose all $26 \times 26$ entries of the stereographic matrix in complex fixed-point intervals at scale $S_{26} = 10^{30}$ (using $325$ certified integer square-root bounds per endpoint) and run an outward-rounded complex Gaussian elimination without pivoting (\texttt{gaussDetCIv}, with complex interval division \texttt{cdivIv} and its soundness theorem \texttt{gaussDetCIv\_mem}), the complex analogue of the real elimination used at $n = 57$.
+  \item \textbf{Staged kernel evaluation:} the row polynomials are evaluated in seven chunks and the elimination in $26$ single-pivot steps per endpoint; each stage is an identity between an explicit function and a literal table, checked by kernel reduction (\texttt{decide +kernel}, which introduces no axioms beyond \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}). The final pivot products have $\mathrm{Re} > 0$ at $t = 8$ and $\mathrm{Re} < 0$ at $t = 10$, and the Intermediate Value Theorem gives $D_{26} = 0$.
+\end{enumerate}
+We do not know whether $26$ is optimal. Both the mirror-symmetric search and an unsymmetric root search for $D_{25} = 0$ started from one-point deletions of the $n = 26$ configurations found nothing at $n = 25$, but both explore only a neighbourhood of one family. Since C1 holds for $n \le 4$~\cite{EastwoodNorbury2001} and is announced for $n = 5$ in~\cite{TanZhang2026}, the smallest $n$ for which C1 fails lies between $6$ and $26$.
 
 \subsection{Mirror-pair lifting and formal non-coplanar nonzero C2 disproof at $n = 59$}
 While $\mathbf{x}^{(36)}(10)$ has $|D_{36}| > 10^{11}$ and therefore refutes C2 at $n = 36$ via the singular IVT point $D_{36} = 0$, our $59$-point mirror-pair construction additionally yields a Lean-certified non-coplanar witness directly violating $0 < |D_{59}| < 1$ (and transfers cleanly to $\Hy^3$). For the planar path $s \mapsto \mathbf{x}^{(57)}(s)$ in $y = 0$, define the $59$-point \emph{mirror-pair extension} $\widetilde{\mathbf{x}}_H(s) \in C_{59}(\R^3)$ (\texttt{mirrorPairExt}) by appending $p_{57} = (0, 1, H)$ and $p_{58} = (0, -1, H)$.
@@ -353,16 +369,17 @@ Proposition~\ref{prop:hyp-limit} yields all parts of Theorem~\ref{thm:main-hyp} 
 
 \section{Formal Verification in Lean~4}
 
-All formalized proofs reside in \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffe.lean}, \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffeExtensions.lean}, and \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffe3D36.lean}, all three imported by the root module \texttt{lean/\allowbreak Matematyka.lean} and built against Lean~\texttt{v4.37.0-rc1} and Mathlib (\texttt{lake build}).
-A standalone, self-contained reproduction repository containing all Lean~4 proofs, Python/mpmath scripts, witness datasets, and this manuscript is publicly archived at \url{https://github.com/tomasztarlowski/atiyah-sutcliffe-counterexamples}.
-All three files contain zero occurrences of \texttt{sorry}, \texttt{admit}, \texttt{native\_decide}, or custom axioms, compile cleanly with zero warnings, and automated \texttt{\#print axioms} auditing confirms that all exported declarations depend exclusively on \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
+All formalized proofs reside in \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffe.lean}, \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffeExtensions.lean}, \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffe3D36.lean}, and \texttt{lean/\allowbreak Matematyka/\allowbreak AtiyahSutcliffe3D26.lean}, all four imported by the root module \texttt{lean/\allowbreak Matematyka.lean} and built against Lean~\texttt{v4.37.0-rc1} and Mathlib (\texttt{lake build}).
+A standalone, self-contained reproduction repository containing all Lean~4 proofs, Python/mpmath scripts, witness datasets, and this manuscript is publicly archived at \url{https://github.com/tomasztarlowski/atiyah-sutcliffe-counterexamples} and permanently preserved on Zenodo at \url{https://doi.org/10.5281/zenodo.24443573}.
+All four files contain zero occurrences of \texttt{sorry}, \texttt{admit}, \texttt{native\_decide}, or custom axioms (the staged identities of \texttt{AtiyahSutcliffe3D26.lean} use kernel-only \texttt{decide +kernel}), compile cleanly with zero warnings, and automated \texttt{\#print axioms} auditing confirms that all exported declarations depend exclusively on \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound}.
 Table~\ref{tab:lean-theorems} lists the principal witness and refutation declarations with their exact logical scope.
 
 \begin{table}[htbp]
 \centering
 \scriptsize
 \setlength{\tabcolsep}{4pt}
-\caption{Principal Lean~4 declarations verified in \texttt{Matematyka.AtiyahSutcliffe}, \texttt{AtiyahSutcliffeExtensions}, and \texttt{AtiyahSutcliffe3D36}.}
+\renewcommand{\arraystretch}{0.92}
+\caption{Principal Lean~4 declarations verified in \texttt{Matematyka.AtiyahSutcliffe}, \texttt{AtiyahSutcliffeExtensions}, \texttt{AtiyahSutcliffe3D36}, and \texttt{AtiyahSutcliffe3D26}.}
 \label{tab:lean-theorems}
 \begin{tabular}{>{\ttfamily\raggedright\arraybackslash}p{0.51\textwidth}>{\raggedright\arraybackslash}p{0.44\textwidth}}
 \toprule
@@ -382,6 +399,11 @@ exists\_noncoplanar\_3d\_36\_atiyahDet\_zero & Existential \texttt{Noncoplanar3D
 disproof\_atiyah\_det\_nonzero\_3d\_36 & Non-coplanar 3D $n = 36$ refutation $\neg \mathrm{AtiyahDetNonzeroProp}$ \\
 disproof\_atiyah\_conjecture\_1\_3d\_36 & Non-coplanar 3D $n = 36$ refutation $\neg \mathrm{AtiyahConjecture1Prop}$ \\
 disproof\_atiyah\_sutcliffe\_conjecture\_2\_3d\_36 & Non-coplanar 3D $n = 36$ refutation $\neg \mathrm{AtiyahSutcliffeConjecture2Prop}$ \\
+gaussDetCIv\_mem & Soundness of certified complex interval Gaussian elimination \\
+exists\_noncoplanar\_3d\_26\_atiyahDet\_neg & Existential \texttt{Noncoplanar3D} $n = 26$ with $\mathrm{Re}\, D_{26} < 0$, $\mathrm{Im}\, D_{26} = 0$ \\
+exists\_noncoplanar\_3d\_26\_atiyahDet\_zero & Existential \texttt{Noncoplanar3D} $n = 26$ with $D_{26} = 0$ (proved via IVT on $[8, 10]$) \\
+disproof\_atiyah\_conjecture\_1\_3d\_26 & Non-coplanar 3D $n = 26$ refutation $\neg \mathrm{AtiyahConjecture1Prop}$ \\
+disproof\_atiyah\_sutcliffe\_conjecture\_2\_3d\_26 & Non-coplanar 3D $n = 26$ refutation $\neg \mathrm{AtiyahSutcliffeConjecture2Prop}$ \\
 exists\_noncoplanar\_59\_violating\_conjecture\_2 & Existential non-coplanar $n = 59$ witness with $-1 < D_{59} < 0$ \\
 exists\_noncoplanar\_59\_atiyahDet\_zero & Existential non-coplanar $n = 59$ witness with $D_{59} = 0$ \\
 exists\_five\_planar\_hyperbolic\_violating\_conjecture\_3 & Existential $\Hy^2$ $n = 5$ witness violating Hyperbolic C3 \\

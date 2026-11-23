@@ -2,6 +2,7 @@ import Mathlib
 import Matematyka.AtiyahSutcliffe
 import Matematyka.AtiyahSutcliffeExtensions
 import Matematyka.AtiyahSutcliffe3D36
+import Matematyka.AtiyahSutcliffe3D26
 
 /-!
 # Solution: Explicit Finite Counterexamples to Euclidean & Hyperbolic Atiyah–Sutcliffe Conjectures
@@ -172,6 +173,11 @@ theorem disproof_atiyah_conjecture_1 : ¬ AtiyahConjecture1Prop :=
 /-- Disproof of Euclidean Atiyah–Sutcliffe Conjecture 2 (`|D_n| ≥ 1`). -/
 theorem disproof_atiyah_sutcliffe_conjecture_2 : ¬ AtiyahSutcliffeConjecture2Prop :=
   Matematyka.AtiyahSutcliffe.disproof_atiyah_sutcliffe_conjecture_2
+
+/-- Genuinely non-coplanar 3D `n = 26` singular configuration (`D_26 = 0`) from the mirror-symmetric `x26Clamp` family. -/
+theorem exists_noncoplanar_3d_26_atiyahDet_zero :
+    ∃ x : DistinctPoints 26, Noncoplanar3D x.1 ∧ atiyahDet x = 0 :=
+  Matematyka.AtiyahSutcliffe3D26.exists_noncoplanar_3d_26_atiyahDet_zero
 
 /-- Genuinely non-coplanar 3D `n = 36` singular configuration (`D_36 = 0`) from coaxial Pythagorean `(33,56,65)` rings. -/
 theorem exists_noncoplanar_3d_36_atiyahDet_zero :
