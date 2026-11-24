@@ -829,7 +829,7 @@ lemma continuous_planarPath_re {n : ℕ} (ptsX ptsZ : Fin n → ℤ) (hz : Stric
           · simp only [hlt, ↓reduceIte, Polynomial.coeff_add, Polynomial.coeff_neg, Polynomial.coeff_C,
               Polynomial.coeff_X]
             by_cases hm0 : m = 0
-            · simpa [hm0] using (hslope_cont a i hlt).neg
+            · simp [hm0]; exact continuous_neg.comp (hslope_cont a i hlt)
             · simp [hm0]; exact continuous_const
           · have hgt : i < a := lt_of_le_of_ne (not_lt.mp hlt) ha_ne.symm
             simp only [hlt, ↓reduceIte, Polynomial.coeff_add, Polynomial.coeff_one, Polynomial.coeff_C_mul_X]

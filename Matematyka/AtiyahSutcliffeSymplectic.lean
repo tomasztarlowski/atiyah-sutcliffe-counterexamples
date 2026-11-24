@@ -1167,7 +1167,7 @@ private lemma continuous_atiyahMat_entry {N : ℕ} (x : ℝ → DistinctPoints N
       · simp [stereoSpinor, hij, hlt, continuous_const]
       · exact absurd rfl hij
       · simp only [stereoSpinor, hij, ↓reduceIte, not_lt_of_gt hgt, Matrix.cons_val_zero]
-        exact (Complex.continuous_conj.comp (continuous_stereoSlope x hcont hz hgt)).neg
+        exact continuous_neg.comp (Complex.continuous_conj.comp (continuous_stereoSlope x hcont hz hgt))
     | 1 =>
       simp_rw [hcoeff1]
       rcases lt_trichotomy i j with hlt | rfl | hgt
@@ -1351,7 +1351,6 @@ private lemma elimRowsCIv_eq_of_withMults (S : ℤ) (piv : CFpIv) (ptail : List 
       rw [h1] at hres
       have ih := elimRowsCIv_eq_of_withMults S piv ptail ms rows _ hres
       rw [elimRowsCIv]
-      dsimp only
       simp only [hz, ↓reduceIte, ih]
     · simp only [hz, Bool.false_eq_true, ↓reduceIte, Prod.mk.injEq, Bool.and_eq_true] at h
       obtain ⟨⟨hm, h1⟩, rfl⟩ := h
@@ -1361,7 +1360,6 @@ private lemma elimRowsCIv_eq_of_withMults (S : ℤ) (piv : CFpIv) (ptail : List 
       have ih := elimRowsCIv_eq_of_withMults S piv ptail ms rows _ hres
       have hmeq : cdivIv S (CFpIv.neg (row.headD CFpIv.zero)) piv = m := eq_of_cFpIvEq hm
       rw [elimRowsCIv]
-      dsimp only
       simp only [hz, Bool.false_eq_true, ↓reduceIte, hmeq, ih]
 
 private def gaussHeadCIvWithMults (S : ℤ) (rows : List (List CFpIv)) (prod : CFpIv) (ms : List CFpIv) :

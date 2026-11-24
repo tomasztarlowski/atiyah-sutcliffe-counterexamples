@@ -284,7 +284,6 @@ private lemma elimRowsIv_eq_of_withMults (S : ℤ) (piv : FpIv) (ptail : List Fp
       rw [h1] at hres
       have ih := elimRowsIv_eq_of_withMults S piv ptail ms rows _ hres
       rw [elimRowsIv]
-      dsimp only
       simp only [hz, ↓reduceIte, ih]
     · simp only [hz, Bool.false_eq_true, ↓reduceIte, Prod.mk.injEq, Bool.and_eq_true] at h
       obtain ⟨⟨hm, h1⟩, rfl⟩ := h
@@ -294,7 +293,6 @@ private lemma elimRowsIv_eq_of_withMults (S : ℤ) (piv : FpIv) (ptail : List Fp
       have ih := elimRowsIv_eq_of_withMults S piv ptail ms rows _ hres
       have hmeq : FpIv.divFp S (FpIv.neg (row.headD FpIv.zero)) piv = m := eq_of_fpIvEq hm
       rw [elimRowsIv]
-      dsimp only
       simp only [hz, Bool.false_eq_true, ↓reduceIte, hmeq, ih]
 
 private def gaussHeadIvWithMults (S : ℤ) (rows : List (List FpIv)) (prod : FpIv) (ms : List FpIv) :

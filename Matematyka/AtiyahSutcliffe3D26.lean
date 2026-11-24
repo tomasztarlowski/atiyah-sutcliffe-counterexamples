@@ -572,7 +572,7 @@ private lemma continuous_stereoMat_x26Clamp_det_re :
       · have hgt : j < i := lt_of_le_of_ne (not_lt.mp hlt) (Ne.symm hij)
         simp only [stereoSpinor, hij, ↓reduceIte, hlt]
         fin_cases m
-        · exact Continuous.neg (Complex.continuous_conj.comp (stereoSlope_x26Clamp_continuous j i hgt))
+        · exact continuous_neg.comp (Complex.continuous_conj.comp (stereoSlope_x26Clamp_continuous j i hgt))
         · exact continuous_const
   have hmat_cont : ∀ i k : Fin 26,
       Continuous (fun t : ℝ => atiyahMat (stereoSpinor (x26Clamp t).1) i k) := by
