@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Challenge: Counterexamples & Holomorphic No-Go Rigidity for the Atiyah–Sutcliffe Conjectures
@@ -15,6 +17,8 @@ holomorphic spinor rigidity / No-Go formulations, and 23 headline theorems cover
 
 Proofs are supplied in `Solution.lean` and audited using strictly `{propext, Quot.sound, Classical.choice}`.
 -/
+
+@[expose] public section
 
 namespace Challenge
 

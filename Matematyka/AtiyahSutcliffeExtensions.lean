@@ -1,4 +1,6 @@
-import Matematyka.AtiyahSutcliffe
+module
+
+public import Matematyka.AtiyahSutcliffe
 
 /-!
 # Extensions: Direct $n = 57$ Record, Genuine Non-Coplanar 3D Disproofs, and Hyperbolic $\mathbb{H}^3$ Disproofs
@@ -29,6 +31,8 @@ We extend `Matematyka.AtiyahSutcliffe` without modifying or weakening any theore
      Hyperbolic C2 (`¬ HyperbolicAtiyahSutcliffeConjecture2Prop`), and Hyperbolic C3 at $n = 5$
      (`¬ HyperbolicAtiyahSutcliffeConjecture3Prop`), both planar ($\mathbb{H}^2$) and strictly non-coplanar ($\mathbb{H}^3$).
 -/
+
+@[expose] public section
 
 namespace Matematyka.AtiyahSutcliffe
 
@@ -1175,7 +1179,7 @@ lemma denFoldIv_lo_le_planarDen {n : ℕ} {S : ℤ} (hS : 0 < S)
       have hnext := ih (FpIv.mulFp S acc (FpIv.add (FpIv.ofInt S 1) (FpIv.mulFp S (cIv q.1 q.2) (cIv q.1 q.2))))
         (v * f q) (fun x hx => hq x (by simp [hx])) (FpIv.mulFp_mem hS hacc hterm)
       simpa [List.foldl_cons, List.map_cons, List.prod_cons, mul_assoc] using hnext
-  have hden_mem := hfold pairs (FpIv.ofInt S 1) 1 hlt (FpIv.ofInt_mem S 1)
+  have hden_mem := hfold pairs (FpIv.ofInt S 1) 1 hlt (by simpa using FpIv.ofInt_mem S 1)
   rw [one_mul] at hden_mem
   let pairsSub : Finset { e : Fin n × Fin n // e.1 < e.2 } :=
     Finset.univ.filter fun e => e.1 ∈ pairs
@@ -1409,7 +1413,7 @@ noncomputable def x57Path : ℝ → DistinctPoints 57 :=
 
 lemma S57_pos : 0 < S57 := by decide
 
-private def abIdx (i j : ℕ) : ℕ :=
+def abIdx (i j : ℕ) : ℕ :=
   if i = 28 ∧ j = 29 then 0 else if i = 28 ∧ j = 30 then 1 else 2
 
 def c57Lit (i j : Fin 57) : FpIv :=

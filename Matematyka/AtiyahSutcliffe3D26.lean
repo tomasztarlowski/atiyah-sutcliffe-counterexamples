@@ -1,5 +1,7 @@
-import Matematyka.AtiyahSutcliffeExtensions
-import Matematyka.AtiyahSutcliffe3D36
+module
+
+public import Matematyka.AtiyahSutcliffeExtensions
+public import Matematyka.AtiyahSutcliffe3D36
 
 /-!
 # Lean-certified non-coplanar 3D disproof of Atiyah–Sutcliffe Conjectures 1 & 2 at `n = 26`
@@ -10,6 +12,8 @@ the full `26 × 26` stereographic Atiyah matrix) shows `(atiyahDet (x26Clamp 8))
 `(atiyahDet (x26Clamp 10)).re < 0`; the reflection symmetry gives `(atiyahDet (x26Clamp t)).im = 0`
 for all `t`, and the Intermediate Value Theorem yields a configuration with `atiyahDet = 0`.
 -/
+
+@[expose] public section
 
 namespace Matematyka.AtiyahSutcliffe3D26
 

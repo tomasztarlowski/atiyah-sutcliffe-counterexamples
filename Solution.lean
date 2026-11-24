@@ -1,11 +1,13 @@
-import Mathlib
-import Matematyka.AtiyahSutcliffe
-import Matematyka.AtiyahSutcliffeExtensions
-import Matematyka.AtiyahSutcliffe3D36
-import Matematyka.AtiyahSutcliffe3D26
-import Matematyka.AtiyahSutcliffePlanar35
-import Matematyka.AtiyahSutcliffeSymplectic
-import Matematyka.AtiyahSutcliffeNoGo
+module
+
+public import Mathlib
+public import Matematyka.AtiyahSutcliffe
+public import Matematyka.AtiyahSutcliffeExtensions
+public import Matematyka.AtiyahSutcliffe3D36
+public import Matematyka.AtiyahSutcliffe3D26
+public import Matematyka.AtiyahSutcliffePlanar35
+public import Matematyka.AtiyahSutcliffeSymplectic
+public import Matematyka.AtiyahSutcliffeNoGo
 
 /-!
 # Solution: Counterexamples & Holomorphic No-Go Rigidity for the Atiyah–Sutcliffe Conjectures
@@ -14,6 +16,8 @@ Supplies kernel-verified proofs for all 23 theorems declared in `Challenge.lean`
 `comparator.json`, bridging `namespace Challenge` definitions directly to
 `Matematyka.AtiyahSutcliffe*`.
 -/
+
+@[expose] public section
 
 namespace Challenge
 

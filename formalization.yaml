@@ -34,14 +34,15 @@ sources:
   - title: "Counterexamples and Holomorphic No-Go Rigidity for the Euclidean, Hyperbolic, and Symplectic Atiyah–Sutcliffe Conjectures"
     authors:
       - "Tomasz Tarłowski"
-    id: "https://doi.org/10.5281/zenodo.24443573"
+    id: "https://doi.org/10.5281/zenodo.24506382"
     type: "paper"
     relationship: "formalizes"
     note: >-
-      Companion 21-page unified manuscript archived on Zenodo (Concept DOI 10.5281/zenodo.24443573)
-      and GitHub, integrating Part I (n = 5 C3, n = 26, 36, 57, 59, 63, H^3) with Part II (planar
-      n = 35, non-coplanar n = 37, H^3 n = 26 and n = 3 5-gap identity, Sp(20)/Sp(18)/B_18 disproofs,
-      and universal SU(2) x S_m holomorphic spinor No-Go theorems).
+      Companion 21-page unified manuscript archived on Zenodo (Preprint PDF DOI
+      10.5281/zenodo.24506382; Software archive DOI 10.5281/zenodo.24505697; Concept DOI
+      10.5281/zenodo.24443573) and GitHub, integrating Part I (n = 5 C3, n = 26, 36, 57, 59, 63,
+      H^3) with Part II (planar n = 35, non-coplanar n = 37, H^3 n = 26 and n = 3 5-gap identity,
+      Sp(20)/Sp(18)/B_18 disproofs, and universal SU(2) x S_m holomorphic spinor No-Go theorems).
     author_endorsement: "participated"
   - title: "The Atiyah–Sutcliffe determinant at five points: positivity and failure of the deletion inequality"
     authors:

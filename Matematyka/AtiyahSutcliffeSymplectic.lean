@@ -1,8 +1,10 @@
-import Matematyka.AtiyahSutcliffe
-import Matematyka.AtiyahSutcliffeExtensions
-import Matematyka.AtiyahSutcliffe3D36
-import Matematyka.AtiyahSutcliffe3D26
-import Matematyka.AtiyahSutcliffePlanar35
+module
+
+public import Matematyka.AtiyahSutcliffe
+public import Matematyka.AtiyahSutcliffeExtensions
+public import Matematyka.AtiyahSutcliffe3D36
+public import Matematyka.AtiyahSutcliffe3D26
+public import Matematyka.AtiyahSutcliffePlanar35
 
 /-!
 # Part II: Symplectic $\mathrm{Sp}(m)$ ($C_m$) and Orthogonal $B_m$ ($\mathrm{SO}(2m+1)$) Disproofs
@@ -15,6 +17,8 @@ This module formalizes exact counterexamples to Atiyah–Sutcliffe Conjectures 1
    - Strictly non-coplanar 3D $B_{18}$ ($N = 37$, $18 \times 18$ real odd subblock), proving both
      $D_{37} = 0$ and linear dependence of the $36$ non-origin Atiyah polynomials.
 -/
+
+@[expose] public section
 
 namespace Matematyka.AtiyahSutcliffeSymplectic
 

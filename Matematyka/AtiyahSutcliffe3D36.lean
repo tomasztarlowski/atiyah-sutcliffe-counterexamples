@@ -1,4 +1,6 @@
-import Matematyka.AtiyahSutcliffe
+module
+
+public import Matematyka.AtiyahSutcliffe
 
 /-!
 # Formally Verified Non-Coplanar 3D Disproof of Atiyah–Sutcliffe Conjectures 1 & 2 (`n = 36`)
@@ -16,6 +18,8 @@ and establish via kernel-checked interval arithmetic (`S = 10^18`, standard axio
 4. Corollaries `disproof_atiyah_det_nonzero_3d_36`, `disproof_atiyah_conjecture_1_3d_36`, and
    `disproof_atiyah_sutcliffe_conjecture_2_3d_36`.
 -/
+
+@[expose] public section
 
 namespace Matematyka.AtiyahSutcliffe3D36
 
@@ -987,7 +991,7 @@ end PermAndStereo
 
 section X36Family
 
-private def x36BaseArr : List (ℤ × ℤ × ℤ) := [
+def x36BaseArr : List (ℤ × ℤ × ℤ) := [
   (0, 0, 0), (0, 0, 10), (0, 0, 20), (0, 0, 30), (0, 0, 40), (0, 0, 50),
   (0, 0, 60), (0, 0, 70), (0, 0, 80), (0, 0, 90), (0, 0, 100), (0, 0, 110),
   (0, 0, 120), (0, 0, 130), (0, 0, 140), (0, 0, 150), (0, 0, 160), (0, 0, 170),
@@ -2653,7 +2657,7 @@ end AntipodalReduce
 
 section CertificationAndDisproofs
 
-private def S36 : ℤ := 1000000000000000000
+def S36 : ℤ := 1000000000000000000
 
 private lemma S36_pos : 0 < S36 := by decide
 
@@ -2954,7 +2958,9 @@ lemma reduce18To6ListCIv_mem {S : ℤ} (hS : 0 < S)
       (((reduce18To6ListCIv S M18Iv).getD q.1 []).getD c.1 CFpIv.zero)
       (reduce18To6C M18 q c) := by
   have hfor : List.Forall₂ (fun n (r : Fin 18) => n = r.1) pivIdxSchedule pivFinSchedule := by
-    decide
+    unfold pivIdxSchedule pivFinSchedule
+    exact .cons rfl (.cons rfl (.cons rfl (.cons rfl (.cons rfl (.cons rfl
+      (.cons rfl (.cons rfl (.cons rfl (.cons rfl (.cons rfl (.cons rfl .nil)))))))))))
   have hinit : ∀ c' : Fin 18,
       CFpIv.CFpMem S ((M18Iv.getD (9 + q.1) []).getD c'.1 CFpIv.zero)
         (M18 ⟨9 + q.1, by omega⟩ c') := fun c' => hM ⟨9 + q.1, by omega⟩ c'

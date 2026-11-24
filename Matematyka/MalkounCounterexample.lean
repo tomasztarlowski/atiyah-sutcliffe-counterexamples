@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Shared Pauli Spinor Preliminaries on $\\mathbb{R}^3$ and $\\mathbb{C}^2$
@@ -7,6 +9,8 @@ This self-contained module provides Euclidean norms, unit chord directions, Paul
 normalized $+1$-eigenspinors, the $\\mathrm{SL}(2,\\mathbb{C})$ symplectic form `omega`, and
 `canonicalSpinor` imported by `Matematyka.AtiyahSutcliffe`.
 -/
+
+@[expose] public section
 
 namespace Matematyka.MalkounCounterexample
 
@@ -192,20 +196,20 @@ lemma omega_opp_ne_zero {v : Fin 3 → ℝ} {ψ φ : Fin 2 → ℂ}
   · exact h0 (congr_fun hcontra 0)
   · exact h1 (congr_fun hcontra 1)
 
-private def unnormPos (v : Fin 3 → ℝ) (i : Fin 2) : ℂ :=
+def unnormPos (v : Fin 3 → ℝ) (i : Fin 2) : ℂ :=
   if i = 0 then ((1 + v 2 : ℝ) : ℂ) else (v 0 : ℂ) + Complex.I * (v 1 : ℂ)
 
-private def unnormNeg (v : Fin 3 → ℝ) (i : Fin 2) : ℂ :=
+def unnormNeg (v : Fin 3 → ℝ) (i : Fin 2) : ℂ :=
   if i = 0 then (v 0 : ℂ) - Complex.I * (v 1 : ℂ) else ((1 - v 2 : ℝ) : ℂ)
 
-private lemma pauliDot_unnormPos {v : Fin 3 → ℝ} (hv : v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2 = 1) :
+lemma pauliDot_unnormPos {v : Fin 3 → ℝ} (hv : v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2 = 1) :
     (pauliDot v).mulVec (unnormPos v) = unnormPos v := by
   ext k
   simp only [unnormPos, Matrix.mulVec, dotProduct, Fin.sum_univ_two, pauliDot, Matrix.of_apply,
     Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_one]
   fin_cases k <;> dsimp <;> apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im] <;> nlinarith
 
-private lemma pauliDot_unnormNeg {v : Fin 3 → ℝ} (hv : v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2 = 1) :
+lemma pauliDot_unnormNeg {v : Fin 3 → ℝ} (hv : v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2 = 1) :
     (pauliDot v).mulVec (unnormNeg v) = unnormNeg v := by
   ext k
   simp only [unnormNeg, Matrix.mulVec, dotProduct, Fin.sum_univ_two, pauliDot, Matrix.of_apply,

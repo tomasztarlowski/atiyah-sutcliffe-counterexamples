@@ -1,5 +1,7 @@
-import Matematyka.AtiyahSutcliffeExtensions
-import Matematyka.AtiyahSutcliffe3D26
+module
+
+public import Matematyka.AtiyahSutcliffeExtensions
+public import Matematyka.AtiyahSutcliffe3D26
 
 /-!
 # Part II — Planar `n = 35` Record (`D_35 < 0`, `-1 < D_35 < 0`), 3D `n = 37`, and Hyperbolic `H^2(35)`, `H^3(26, 37)`
@@ -12,6 +14,8 @@ Extends the Part I (`v1.1.0`) formalization cleanly in a separate module without
 3. **Hyperbolic `H^3` transfer at `n = 26`** via general permutation invariance `atiyahDetOfSpinors_perm` and
    `reflectPerm26`, lowering the certified strictly non-coplanar `H^3` C1/C2 disproof from `n = 59` to `n = 26`.
 -/
+
+@[expose] public section
 
 namespace Matematyka.AtiyahSutcliffePlanar35
 

@@ -1,8 +1,10 @@
-import Matematyka.AtiyahSutcliffe
-import Matematyka.AtiyahSutcliffeExtensions
-import Matematyka.AtiyahSutcliffe3D26
-import Matematyka.AtiyahSutcliffePlanar35
-import Matematyka.AtiyahSutcliffeSymplectic
+module
+
+public import Matematyka.AtiyahSutcliffe
+public import Matematyka.AtiyahSutcliffeExtensions
+public import Matematyka.AtiyahSutcliffe3D26
+public import Matematyka.AtiyahSutcliffePlanar35
+public import Matematyka.AtiyahSutcliffeSymplectic
 
 /-!
 # Part III: Universal $\mathrm{SU}(2) \times S_m$ Holomorphic Spinor Rigidity,
@@ -21,6 +23,8 @@ This module formalizes:
    - centrally symmetric strictly non-coplanar 3D $\mathrm{Sp}(18)$ configurations at $n = 36$.
 3. Exact hyperbolic $n = 3$ 5-gap identity and positivity ($D_3^{\mathbb{H}} > 1$).
 -/
+
+@[expose] public section
 
 namespace Matematyka.AtiyahSutcliffeNoGo
 
@@ -790,11 +794,11 @@ end SpinorRigidity
 
 section WeightedNoGo
 
-private def omitIdx {n : ℕ} (i : Fin n) (r : Fin (n - 1)) : Fin n :=
+def omitIdx {n : ℕ} (i : Fin n) (r : Fin (n - 1)) : Fin n :=
   if r.1 < i.1 then ⟨r.1, by have := i.2; omega⟩
   else ⟨r.1 + 1, by have := r.2; have := i.2; omega⟩
 
-private lemma omitIdx_ne {n : ℕ} (i : Fin n) (r : Fin (n - 1)) : omitIdx i r ≠ i := by
+lemma omitIdx_ne {n : ℕ} (i : Fin n) (r : Fin (n - 1)) : omitIdx i r ≠ i := by
   unfold omitIdx
   split_ifs with h <;> intro heq <;> have hv := congr_arg Fin.val heq <;> dsimp at hv <;> omega
 
