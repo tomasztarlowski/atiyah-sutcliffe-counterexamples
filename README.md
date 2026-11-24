@@ -4,8 +4,8 @@
 
 Machine-checked **Lean 4 (`v4.37.0-rc1` + Mathlib)** counterexamples, continuous homotopies, representation-theoretic No-Go rigidity theorems, and high-precision (`60`–`80` digit `mpmath`) numerical certificates refuting the Atiyah–Sutcliffe conjectures across Euclidean $C_n(\mathbb{R}^3)$, hyperbolic $C_n(\mathbb{H}^3)$, symplectic $\mathrm{Sp}(m)$, and odd-orthogonal $B_m = \mathrm{SO}(2m+1)$ configuration loci, alongside a universal $\mathrm{SU}(2) \times S_m$ spinor No-Go theorem.
 
-- **Preprint manuscript:** [`paper/atiyah_sutcliffe_counterexamples.tex`](paper/atiyah_sutcliffe_counterexamples.tex) ([compiled PDF](paper/atiyah_sutcliffe_counterexamples.pdf), 21 pages, 9 sections, 4 tables)
-- **Zenodo archive:** https://doi.org/10.5281/zenodo.24443573 (Concept DOI — always resolves to the latest release; `v2.0.0`: https://doi.org/10.5281/zenodo.24505697; `v1.1.0`: https://doi.org/10.5281/zenodo.24476029)
+- **Preprint manuscript (`Publication / Preprint`, inline PDF preview):** [`paper/atiyah_sutcliffe_counterexamples.tex`](paper/atiyah_sutcliffe_counterexamples.tex) ([compiled PDF](paper/atiyah_sutcliffe_counterexamples.pdf), 21 pages, 9 sections, 4 tables) — Zenodo Preprint DOI: https://doi.org/10.5281/zenodo.24506382 (Concept DOI: https://doi.org/10.5281/zenodo.24506381)
+- **Zenodo code & data archive:** https://doi.org/10.5281/zenodo.24443573 (Concept DOI — always resolves to the latest release; `v2.0.0`: https://doi.org/10.5281/zenodo.24505697; `v1.1.0`: https://doi.org/10.5281/zenodo.24476029)
 - **Axiom purity & Palomar bridge:** All 8 Lean 4 library modules and `Solution.lean` contain **zero** `sorry`, **zero** `admit`, and **zero** `native_decide` (staged kernel table checks use `decide +kernel`). All **23 headline theorems** exported in `Challenge.lean` / `Solution.lean` / `comparator.json` depend strictly on standard Lean axioms `{propext, Classical.choice, Quot.sound}`.
 
 ---
