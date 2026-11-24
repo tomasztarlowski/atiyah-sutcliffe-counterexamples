@@ -2,22 +2,23 @@
 version: "v0.4"
 
 project:
-  name: "Explicit Finite Counterexamples to the Euclidean and Hyperbolic Atiyah–Sutcliffe Conjectures"
+  name: "Counterexamples and Holomorphic No-Go Rigidity for the Euclidean, Hyperbolic, and Symplectic Atiyah–Sutcliffe Conjectures"
   description: >-
-    Lean 4 and Mathlib formalization refuting all three classical Atiyah–Sutcliffe conjectures
-    (C1, C2, and C3, 2001/2002) in both Euclidean 3-space C_n(R^3) and hyperbolic 3-space
-    C_n(H^3) via explicit integer witnesses, continuous homotopies, parity block Schur reductions,
-    and kernel-checked fixed-point interval arithmetic (zero sorry, zero admit, zero native_decide,
-    standard axioms {propext, Quot.sound, Classical.choice} only). Establishes: (1) a Lean 4
-    refutation of Euclidean Conjecture 3 at the minimal n = 5 both in R^2 and non-coplanar R^3
-    (planar failure first announced by Tan–Zhang, Oct 2026); (2) planar n = 57 (K = 3) and n = 63
-    (K = 2) sign reversals and direct nonzero C2 violations (-1 < D_n < 0) via kernel Gaussian
-    elimination and denominator folding; (3) genuinely non-coplanar 3D C1/C2 disproofs lowered to
-    n = 36 via coaxial Pythagorean (33, 56, 65) rings (D_36(9) > 0 > D_36(10), IVT root D_36 = 0)
-    and further down to n = 26 via a mirror-symmetric integer family and 26 x 26 certified complex
-    Gaussian elimination (D_26(8) > 0 > D_26(10), staged decide +kernel checks), complemented by
-    mirror-pair n = 59 witnesses; and (4) the first machine-checked hyperbolic H^3 refutations of C3
-    (n = 5) and C1/C2 (n = 57 in H^2, n = 59 in H^3) via the Beltrami–Klein ball limit.
+    Lean 4 and Mathlib formalization refuting the classical Euclidean, hyperbolic, symplectic Sp(m),
+    and orthogonal SO(2m+1) Atiyah–Sutcliffe conjectures and establishing universal SU(2) x S_m
+    holomorphic spinor No-Go rigidity via explicit integer witnesses, continuous homotopies,
+    z-rotation and antipodal parity block Schur reductions, Schur–Weyl representation theory, and
+    kernel-checked fixed-point interval arithmetic (zero sorry, zero admit, zero native_decide,
+    standard axioms {propext, Quot.sound, Classical.choice} only). Establishes: (1) Euclidean and
+    hyperbolic C3 refutations at minimal n = 5 (planar C3 failure first announced by Tan–Zhang, Oct
+    2026) alongside the exact n = 3 5-gap positivity theorem D_3^H > 1; (2) lowered planar C1/C2
+    disproofs down to n = 35 (-1 < D_35 < 0 and IVT zero D_35 = 0, alongside n = 57, 63) in R^2
+    and H^2, plus non-coplanar n = 37 (-1 < D_37 < 0 in R^3, H^3); (3) strictly non-coplanar 3D
+    and H^3 C1/C2 disproofs at n = 26 (D_26 = 0, D_26^H = 0, and -1 < D_26^H < 0, alongside coaxial
+    n = 36 and mirror-pair n = 59); (4) Sp(20) (planar, 2m = 40), non-coplanar 3D Sp(18) (2m = 36),
+    and non-coplanar B_18 = SO(37) (n = 37, including 36 non-origin linear dependence) C1/C2
+    refutations; and (5) universal SU(2) x S_m multilinear spinor polynomial rigidity and
+    unconditional weighted multi-body No-Go theorems at n = 26 (R^3), n = 35 (R^2), and n = 36 (Sp(18)).
   authors:
     - "Tomasz Tarłowski"
   responsible_maintainers:
@@ -27,20 +28,20 @@ project:
 
 classification:
   arxiv: ["math.MG", "math-ph", "cs.LO"]
-  msc2020: ["51M15", "70G45", "81Q70", "68V20"]
+  msc2020: ["51M15", "70G45", "22E46", "81Q70", "68V20"]
 
 sources:
-  - title: "Explicit Finite Counterexamples to the Euclidean and Hyperbolic Atiyah–Sutcliffe Conjectures"
+  - title: "Counterexamples and Holomorphic No-Go Rigidity for the Euclidean, Hyperbolic, and Symplectic Atiyah–Sutcliffe Conjectures"
     authors:
       - "Tomasz Tarłowski"
     id: "https://doi.org/10.5281/zenodo.24443573"
     type: "paper"
     relationship: "formalizes"
     note: >-
-      Companion 17-page preprint archived on Zenodo (Concept DOI 10.5281/zenodo.24443573) and GitHub,
-      detailing the n = 5 C3 refutation, K = 3 planar n = 57 witness, non-coplanar 3D n = 36 Pythagorean
-      and n = 26 mirror-symmetric constructions, n = 59 mirror-pair C2 witness, and Beltrami–Klein
-      hyperbolic transfer.
+      Companion 21-page unified manuscript archived on Zenodo (Concept DOI 10.5281/zenodo.24443573)
+      and GitHub, integrating Part I (n = 5 C3, n = 26, 36, 57, 59, 63, H^3) with Part II (planar
+      n = 35, non-coplanar n = 37, H^3 n = 26 and n = 3 5-gap identity, Sp(20)/Sp(18)/B_18 disproofs,
+      and universal SU(2) x S_m holomorphic spinor No-Go theorems).
     author_endorsement: "participated"
   - title: "The Atiyah–Sutcliffe determinant at five points: positivity and failure of the deletion inequality"
     authors:
@@ -73,6 +74,23 @@ sources:
       Formulated Conjectures 1, 2, and 3 in Euclidean R^3 and hyperbolic H^3. All three
       conjectures are formally refuted here in both spaces.
     author_endorsement: "not-contacted"
+  - title: "Configurations of points and the symplectic Berry–Robbins problem"
+    authors:
+      - "Joseph Malkoun"
+    id: "arXiv:1407.8291"
+    type: "paper"
+    location: "SIGMA 10 (2014), 112"
+    relationship: "disproves"
+    note: "Symplectic Sp(m) Atiyah–Sutcliffe locus formally refuted at m = 20 (planar) and m = 18 (3D)."
+    author_endorsement: "not-contacted"
+  - title: "Constructions of SU(2) and Weyl equivariant maps for all classical groups"
+    authors:
+      - "Joseph Malkoun"
+    id: "arXiv:1508.04076"
+    type: "paper"
+    relationship: "disproves"
+    note: "Odd-orthogonal B_m = SO(2m+1) locus formally refuted at m = 18 (n = 37)."
+    author_endorsement: "not-contacted"
   - title: "Singular Atiyah Configurations"
     authors:
       - "Jan Eickhoff"
@@ -82,7 +100,7 @@ sources:
     note: >-
       Proved asymptotic existence of singular configurations (D_n = 0) via dihedral two-orbit
       families and proposed the Beltrami–Klein scaling limit; this work gives explicit small-n
-      witnesses (n = 36 3D, n = 57 K=3 planar, n = 5 C3, direct C2) and Lean 4 formal proofs.
+      witnesses (n = 26, 35, 36, 37, n = 5 C3, direct C2) and Lean 4 formal proofs.
     author_endorsement: "not-contacted"
 
 related_formalizations:
@@ -90,15 +108,17 @@ related_formalizations:
     relationship: "independent"
     note: >-
       Independent Lean 4 formalization of Euclidean C1 at n = 46 using unnormalized determinants;
-      this repository formalizes normalized D_n, lowers 3D C1/C2 to n = 36 and n = 26, adds a Lean 4
-      C3 proof at n = 5, direct nonzero C2 witnesses, and hyperbolic H^3 disproofs.
+      this repository formalizes normalized D_n, lowers 3D C1/C2 to n = 36 and n = 26, planar to n = 35,
+      adds Lean 4 C3 proofs at n = 5, hyperbolic H^3 disproofs down to n = 26, Sp(m)/B_18 refutations,
+      and universal SU(2) x S_m No-Go theorems.
 
 status:
   scope: >-
     Formalized unconditionally: Euclidean C3 refutation (n = 5 planar & 3D), Euclidean C1 & C2
-    refutations (planar n = 57, 63; non-coplanar 3D n = 26, 36, 59), and Hyperbolic H^2/H^3
-    refutations of C3 (n = 5) and C1/C2 (n = 57, 59). Exact minimal C1/C2 threshold in 6 <= n <= 25
-    remains open.
+    refutations (planar n = 35, 57, 63; non-coplanar 3D n = 26, 36, 37, 59), Hyperbolic H^2/H^3
+    refutations of C3 (n = 5) and C1/C2 (planar n = 35, 57; non-coplanar n = 26, 37, 59), H^3
+    n = 3 5-gap positivity (D_3^H > 1), Sp(20)/Sp(18)/B_18 disproofs, and SU(2) x S_m No-Go
+    rigidity. Exact minimal C1/C2 threshold in 6 <= n <= 25 remains open.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Quot.sound", "Classical.choice"]
@@ -111,7 +131,7 @@ automation:
         - "Gemini (witness search, interval arithmetic kernel engineering, Lean 4 formalization)"
         - "Claude & OpenAI Codex (independent mathematical review & verification)"
       tool_setup: >-
-        60/80-digit arbitrary-precision verification in Python/mpmath (scripts/scan_atiyah_sutcliffe.py)
+        60/65/80-digit arbitrary-precision verification in Python/mpmath
         formalized and kernel-verified in Lean 4 v4.37.0-rc1 against Mathlib v4.37.0-rc1.
       prompting_notes: "Author-directed development; all formal proofs verified by Lean 4 kernel and #print axioms."
   notes: >-
@@ -122,8 +142,8 @@ review:
   status: "self-assessed"
   notes: >-
     Verified locally by the author against Lean 4 v4.37.0-rc1 + Mathlib with zero sorry, zero admit,
-    zero native_decide (AtiyahSutcliffe3D26.lean uses kernel-only decide +kernel), and strict Comparator
-    type/axiom checking of Challenge vs Solution.
+    zero native_decide (staged kernel tables use decide +kernel), and strict Comparator
+    type/axiom checking of Challenge vs Solution across all 23 headline theorems.
 
 acknowledgements: >-
-  Lean 4 and Mathlib contributors, Paul Sutcliffe, Jan Eickhoff, Azat Akhtyamov, and H. Tan & Y. Zhang.
+  Lean 4 and Mathlib contributors, Paul Sutcliffe, Joseph Malkoun, Jan Eickhoff, Azat Akhtyamov, and H. Tan & Y. Zhang.

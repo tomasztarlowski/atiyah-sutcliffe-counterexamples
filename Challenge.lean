@@ -1,16 +1,17 @@
 import Mathlib
 
 /-!
-# Challenge: Explicit Finite Counterexamples to Euclidean & Hyperbolic Atiyah–Sutcliffe Conjectures
+# Challenge: Counterexamples & Holomorphic No-Go Rigidity for the Atiyah–Sutcliffe Conjectures
 
-This lightweight Challenge module declares the Euclidean (`C_n(ℝ³)`) and hyperbolic
-(`C_n(ℍ³)` via the Beltrami–Klein ball `B³`) Atiyah–Sutcliffe normalized determinant,
-linear-independence / modulus / geometric-mean conjectures (C1, C2, C3), and 13 headline
-disproof theorems covering:
-- Euclidean C3 refutation at `n = 5` (planar failure first announced by Tan–Zhang, Oct 2026);
-- Planar (`n = 57, 63`) and strictly non-coplanar 3D (`n = 26` mirror-symmetric family,
-  `n = 36` via coaxial Pythagorean rings, and `n = 59` via mirror-pair extension) refutations of Euclidean C1 and C2;
-- Hyperbolic (`ℍ²` & `ℍ³`) refutations of C3 (`n = 5`) and C1/C2 (`n = 57, 59`).
+This lightweight Challenge module declares the Euclidean (`C_n(ℝ³)`), hyperbolic (`C_n(ℍ³)` via
+the Beltrami–Klein ball `B³`), symplectic (`Sp(m)`), and orthogonal (`B_m = SO(2m+1)`)
+Atiyah–Sutcliffe normalized determinants, conjectures (C1, C2, C3), $\mathrm{SU}(2) \times S_m$
+holomorphic spinor rigidity / No-Go formulations, and 23 headline theorems covering:
+- Euclidean & hyperbolic C3 refutations at `n = 5` (planar C3 failure first announced by Tan–Zhang, Oct 2026);
+- Planar (`n = 35, 57, 63`) and strictly non-coplanar 3D (`n = 26, 36, 37, 59`) refutations of C1 and C2;
+- Hyperbolic (`ℍ²` & `ℍ³`) refutations down to non-coplanar `n = 26`, plus the `n = 3` 5-gap positivity `D_3^ℍ > 1`;
+- Symplectic `Sp(18)` (`2m = 36`) and orthogonal `B_{18} = SO(37)` (`n = 37`) C1 refutations;
+- Universal $\mathrm{SU}(2) \times S_m$ multilinear spinor rigidity and weighted multi-body No-Go (`n = 26`).
 
 Proofs are supplied in `Solution.lean` and audited using strictly `{propext, Quot.sound, Classical.choice}`.
 -/
@@ -155,6 +156,71 @@ def HyperbolicAtiyahSutcliffeConjecture3Prop : Prop :=
   ∀ (m : ℕ) (_ : 2 ≤ m) (q : KleinBallPoints (m + 1)),
     (∏ k : Fin (m + 1), ‖hyperbolicAtiyahDet (deleteKleinPoint q k)‖) ≤ ‖hyperbolicAtiyahDet q‖ ^ (m - 1)
 
+/-- Centrally symmetric symplectic configuration ($\mathrm{Sp}(m)$ locus $\mathbf{X} = -\mathbf{X}$). -/
+structure SymplecticConfig (m : ℕ) where
+  p : Fin (2 * m) → Fin 3 → ℝ
+  distinct : ∀ i j, i ≠ j → p i ≠ p j
+  antipodal : Equiv.Perm (Fin (2 * m))
+  involutive : ∀ i, antipodal (antipodal i) = i
+  neg_eq : ∀ i k, p (antipodal i) k = -p i k
+
+/-- Atiyah Conjecture 1 restricted to centrally symmetric `Sp(m)` configurations. -/
+def SymplecticAtiyahConjecture1Prop (m : ℕ) : Prop :=
+  ∀ c : SymplecticConfig m, LinearIndependent ℂ (fun i : Fin (2 * m) =>
+    atiyahPoly (fun u v => canonicalSpinor (unitDir (c.p u) (c.p v))) i)
+
+/-- Origin-augmented centrally symmetric orthogonal configuration ($B_m = \mathrm{SO}(2m+1)$ locus). -/
+structure OrthogonalBConfig (m : ℕ) where
+  p : Fin (2 * m + 1) → Fin 3 → ℝ
+  distinct : ∀ i j, i ≠ j → p i ≠ p j
+  originIdx : Fin (2 * m + 1)
+  origin_eq : ∀ k, p originIdx k = 0
+  antipodal : Equiv.Perm (Fin (2 * m + 1))
+  involutive : ∀ i, antipodal (antipodal i) = i
+  fix_origin : antipodal originIdx = originIdx
+  neg_eq : ∀ i k, p (antipodal i) k = -p i k
+
+/-- Atiyah Conjecture 1 restricted to origin-augmented `B_m` configurations. -/
+def OrthogonalBAtiyahConjecture1Prop (m : ℕ) : Prop :=
+  ∀ c : OrthogonalBConfig m, LinearIndependent ℂ (fun i : Fin (2 * m + 1) =>
+    atiyahPoly (fun u v => canonicalSpinor (unitDir (c.p u) (c.p v))) i)
+
+/-- Predicate characterizing special unitary $2 \times 2$ complex matrices $\mathrm{SU}(2)$. -/
+def IsSU2 (U : Matrix (Fin 2) (Fin 2) ℂ) : Prop :=
+  U * U.conjTranspose = 1 ∧ U.det = 1
+
+/-- Canonical degree-1 spinor linear factor $v_0 + v_1 T$. -/
+noncomputable def atiyahLinearFactor (v : Fin 2 → ℂ) : Polynomial ℂ :=
+  Polynomial.C (v 0) + Polynomial.C (v 1) * Polynomial.X
+
+/-- Standard homogeneous $\mathrm{GL}_2(\mathbb{C})$ action on $\mathbb{C}[T]_{\le m}$. -/
+noncomputable def spinPolyAction (m : ℕ) (U : Matrix (Fin 2) (Fin 2) ℂ) (P : Polynomial ℂ) :
+    Polynomial ℂ :=
+  ∑ k ∈ Finset.range (m + 1),
+    Polynomial.C (P.coeff k) *
+      (Polynomial.C (U 0 1) + Polynomial.C (U 1 1) * Polynomial.X) ^ k *
+      (Polynomial.C (U 0 0) + Polynomial.C (U 1 0) * Polynomial.X) ^ (m - k)
+
+/-- Predicate for coordinatewise $\mathbb{C}$-linear, $S_m$-symmetric, $\mathrm{SU}(2)$-equivariant spinor maps. -/
+def IsSpinorEquivariantMultilinear (m : ℕ) (Φ : (Fin m → Fin 2 → ℂ) → Polynomial ℂ) : Prop :=
+  (∀ v, ∀ d > m, (Φ v).coeff d = 0) ∧
+  (∀ (k : Fin m) (v : Fin m → Fin 2 → ℂ) (a b : ℂ) (x y : Fin 2 → ℂ),
+    Φ (Function.update v k (a • x + b • y)) =
+      Polynomial.C a * Φ (Function.update v k x) +
+        Polynomial.C b * Φ (Function.update v k y)) ∧
+  (∀ (σ : Equiv.Perm (Fin m)) (v : Fin m → Fin 2 → ℂ), Φ (v ∘ σ) = Φ v) ∧
+  (∀ (U : Matrix (Fin 2) (Fin 2) ℂ), IsSU2 U →
+    ∀ v : Fin m → Fin 2 → ℂ, Φ (fun k => U.mulVec (v k)) = spinPolyAction m U (Φ v))
+
+/-- Arbitrary finite linear combination of $\mathrm{SU}(2) \times S_m$-equivariant multilinear spinor maps
+with arbitrary $(m + 1)$-body scalar weights `W α x i`. -/
+noncomputable def weightedSpinorCandidate {m : ℕ} {ι : Type*} [Fintype ι]
+    (Φ : ι → (Fin m → Fin 2 → ℂ) → Polynomial ℂ)
+    (W : ι → DistinctPoints (m + 1) → Fin (m + 1) → ℂ)
+    (x : DistinctPoints (m + 1)) (i : Fin (m + 1)) : Polynomial ℂ :=
+  ∑ α : ι, Polynomial.C (W α x i) *
+    Φ α (fun r : Fin m => canonicalSpinor (unitDir (x.1 i) (x.1 (i.succAbove r))))
+
 /-- Disproof of Euclidean Atiyah–Sutcliffe Conjecture 3 at sharp minimal `n = 5`. -/
 theorem disproof_atiyah_sutcliffe_conjecture_3 : ¬ AtiyahSutcliffeConjecture3Prop := by
   sorry
@@ -193,6 +259,26 @@ theorem exists_noncoplanar_59_violating_conjecture_2 :
       (atiyahDet x).im = 0 ∧ (atiyahDet x).re < 0 ∧ ‖atiyahDet x‖ < 1 := by
   sorry
 
+/-- Planar `n = 35` witness directly violating Conjecture 2 with `-1 < D_35 < 0`. -/
+theorem exists_planar_35_violating_conjecture_2 :
+    ∃ x : DistinctPoints 35, IsCoplanar x ∧
+      (atiyahDet x).im = 0 ∧ (atiyahDet x).re < 0 ∧ ‖atiyahDet x‖ < 1 := by
+  sorry
+
+/-- Planar `n = 35` singular configuration (`D_35 = 0`) refuting C1 and C2. -/
+theorem exists_planar_35_atiyahDet_zero :
+    ∃ x : DistinctPoints 35, IsCoplanar x ∧
+      atiyahDet x = 0 ∧
+      ¬ LinearIndependent ℂ (fun i : Fin 35 =>
+          atiyahPoly (fun u v => canonicalSpinor (unitDir (x.1 u) (x.1 v))) i) := by
+  sorry
+
+/-- Strictly non-coplanar 3D `n = 37` mirror-pair witness directly violating Conjecture 2 with `-1 < D_37 < 0`. -/
+theorem exists_noncoplanar_37_violating_conjecture_2 :
+    ∃ x : DistinctPoints 37, ¬ IsCoplanar x ∧
+      (atiyahDet x).im = 0 ∧ (atiyahDet x).re < 0 ∧ ‖atiyahDet x‖ < 1 := by
+  sorry
+
 /-- Disproof of Hyperbolic Atiyah–Sutcliffe Conjecture 3 in `ℍ²` and `ℍ³` at `n = 5`. -/
 theorem disproof_hyperbolic_atiyah_sutcliffe_conjecture_3 :
     ¬ HyperbolicAtiyahSutcliffeConjecture3Prop := by
@@ -215,6 +301,47 @@ theorem disproof_hyperbolic_atiyah_sutcliffe_conjecture_2 :
 theorem exists_noncoplanar_59_hyperbolic_violating_conjecture_2 :
     ∃ q : KleinBallPoints 59, ¬ IsHyperbolicCoplanar q ∧
       (hyperbolicAtiyahDet q).im = 0 ∧ (hyperbolicAtiyahDet q).re < 0 ∧ ‖hyperbolicAtiyahDet q‖ < 1 := by
+  sorry
+
+/-- Lowered strictly non-coplanar `ℍ³` `n = 26` singular configuration (`D_26^ℍ = 0`). -/
+theorem exists_noncoplanar_26_hyperbolic_atiyahDet_zero :
+    ∃ q : KleinBallPoints 26, ¬ IsHyperbolicCoplanar q ∧
+      hyperbolicAtiyahDet q = 0 ∧ ¬ LinearIndependent ℂ (fun i : Fin 26 => hyperbolicAtiyahPoly q i) := by
+  sorry
+
+/-- Lowered strictly non-coplanar `ℍ³` `n = 26` direct nonzero C2 witness (`-1 < D_26^ℍ < 0`). -/
+theorem exists_noncoplanar_26_hyperbolic_violating_conjecture_2 :
+    ∃ q : KleinBallPoints 26, ¬ IsHyperbolicCoplanar q ∧
+      (hyperbolicAtiyahDet q).im = 0 ∧ (hyperbolicAtiyahDet q).re < 0 ∧ ‖hyperbolicAtiyahDet q‖ < 1 := by
+  sorry
+
+/-- Disproof of Symplectic Atiyah Conjecture 1 at `Sp(18)` (`2m = 36`, strictly non-coplanar 3D). -/
+theorem disproof_symplectic_18_conjecture_1 : ¬ SymplecticAtiyahConjecture1Prop 18 := by
+  sorry
+
+/-- Disproof of Orthogonal `B_18` (`SO(37)`, `n = 37`) Atiyah Conjecture 1. -/
+theorem disproof_orthogonalB_18_conjecture_1 : ¬ OrthogonalBAtiyahConjecture1Prop 18 := by
+  sorry
+
+/-- Schur–Weyl / `SU(2) × S_m` rigidity: every equivariant multilinear spinor polynomial is scalar-proportional to Atiyah's product. -/
+theorem su2_symmetric_multilinear_eq_atiyahFactor {m : ℕ}
+    {Φ : (Fin m → Fin 2 → ℂ) → Polynomial ℂ} (hΦ : IsSpinorEquivariantMultilinear m Φ) :
+    ∃ c : ℂ, ∀ v : Fin m → Fin 2 → ℂ, Φ v = Polynomial.C c * ∏ k : Fin m, atiyahLinearFactor (v k) := by
+  sorry
+
+/-- Universal holomorphic spinor No-Go at non-coplanar 3D `n = 26` under arbitrary multi-body scalar weights. -/
+theorem universal_holomorphic_spinor_nogo_noncoplanar_3d_26
+    {ι : Type*} [Fintype ι]
+    (Φ : ι → (Fin 25 → Fin 2 → ℂ) → Polynomial ℂ)
+    (hΦ : ∀ α : ι, IsSpinorEquivariantMultilinear 25 (Φ α))
+    (W : ι → DistinctPoints 26 → Fin 26 → ℂ) :
+    ∃ x : DistinctPoints 26, Noncoplanar3D x.1 ∧
+      ¬ LinearIndependent ℂ (fun i : Fin 26 => weightedSpinorCandidate Φ W x i) := by
+  sorry
+
+/-- Concrete unconditional witness verifying `D_3^ℍ > 1` on a Klein triangle in `B³`. -/
+theorem exists_hyperbolic_three_point_det_gt_one :
+    ∃ q : KleinBallPoints 3, (hyperbolicAtiyahDet q).im = 0 ∧ 1 < (hyperbolicAtiyahDet q).re := by
   sorry
 
 end Challenge

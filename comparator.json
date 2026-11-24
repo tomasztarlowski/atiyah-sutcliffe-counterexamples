@@ -10,11 +10,21 @@
     "Challenge.exists_noncoplanar_3d_26_atiyahDet_zero",
     "Challenge.exists_noncoplanar_3d_36_atiyahDet_zero",
     "Challenge.exists_noncoplanar_59_violating_conjecture_2",
+    "Challenge.exists_planar_35_violating_conjecture_2",
+    "Challenge.exists_planar_35_atiyahDet_zero",
+    "Challenge.exists_noncoplanar_37_violating_conjecture_2",
     "Challenge.disproof_hyperbolic_atiyah_sutcliffe_conjecture_3",
     "Challenge.disproof_hyperbolic_atiyah_det_nonzero",
     "Challenge.disproof_hyperbolic_atiyah_conjecture_1",
     "Challenge.disproof_hyperbolic_atiyah_sutcliffe_conjecture_2",
-    "Challenge.exists_noncoplanar_59_hyperbolic_violating_conjecture_2"
+    "Challenge.exists_noncoplanar_59_hyperbolic_violating_conjecture_2",
+    "Challenge.exists_noncoplanar_26_hyperbolic_atiyahDet_zero",
+    "Challenge.exists_noncoplanar_26_hyperbolic_violating_conjecture_2",
+    "Challenge.disproof_symplectic_18_conjecture_1",
+    "Challenge.disproof_orthogonalB_18_conjecture_1",
+    "Challenge.su2_symmetric_multilinear_eq_atiyahFactor",
+    "Challenge.universal_holomorphic_spinor_nogo_noncoplanar_3d_26",
+    "Challenge.exists_hyperbolic_three_point_det_gt_one"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
 }

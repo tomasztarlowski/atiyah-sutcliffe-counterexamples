@@ -3,3 +3,6 @@ import Matematyka.AtiyahSutcliffe
 import Matematyka.AtiyahSutcliffeExtensions
 import Matematyka.AtiyahSutcliffe3D36
 import Matematyka.AtiyahSutcliffe3D26
+import Matematyka.AtiyahSutcliffePlanar35
+import Matematyka.AtiyahSutcliffeSymplectic
+import Matematyka.AtiyahSutcliffeNoGo
