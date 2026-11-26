@@ -115,11 +115,15 @@ related_formalizations:
 
 status:
   scope: >-
-    Formalized unconditionally: Euclidean C3 refutation (n = 5 planar & 3D), Euclidean C1 & C2
-    refutations (planar n = 35, 57, 63; non-coplanar 3D n = 26, 36, 37, 59), Hyperbolic H^2/H^3
-    refutations of C3 (n = 5) and C1/C2 (planar n = 35, 57; non-coplanar n = 26, 37, 59), H^3
-    n = 3 5-gap positivity (D_3^H > 1), Sp(20)/Sp(18)/B_18 disproofs, and SU(2) x S_m No-Go
-    rigidity. Exact minimal C1/C2 threshold in 6 <= n <= 25 remains open.
+    Formalized unconditionally across 26 compared theorems in Challenge.lean (and additional library
+    results in Matematyka.AtiyahSutcliffe*): Euclidean C3 refutation (n = 5 coplanar & 3D),
+    Euclidean C1 & C2 refutations (planar n = 35 in Challenge.lean, plus n = 57, 63 in the library;
+    non-coplanar 3D n = 26, 36, 37, 59), Hyperbolic H^2/H^3 refutations of C3 (n = 5 coplanar H^2 &
+    non-coplanar H^3 in Challenge.lean) and C1/C2 (non-coplanar H^3 n = 26, 59 in Challenge.lean,
+    plus planar H^2 n = 35 and H^3 n = 37 in the library), H^3 n = 3 witness D_3^H > 1,
+    non-coplanar 3D Sp(18) (2m = 36) & B_18 = SO(37) (n = 37) disproofs (plus planar Sp(20) and
+    B_18 non-origin linear dependence in the library), and SU(2) x S_m No-Go rigidity at n = 26.
+    Exact minimal C1/C2 threshold in 6 <= n <= 25 remains open.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: ["propext", "Quot.sound", "Classical.choice"]
@@ -130,21 +134,25 @@ automation:
       framework: "Google Antigravity"
       models:
         - "Gemini (witness search, interval arithmetic kernel engineering, Lean 4 formalization)"
-        - "Claude & OpenAI Codex (independent mathematical review & verification)"
+        - "Claude & OpenAI Codex (proof-engineering assistance, informal critique, and script cross-checking)"
       tool_setup: >-
         60/65/80-digit arbitrary-precision verification in Python/mpmath
-        formalized and kernel-verified in Lean 4 v4.37.0-rc1 against Mathlib v4.37.0-rc1.
-      prompting_notes: "Author-directed development; all formal proofs verified by Lean 4 kernel and #print axioms."
+        formalized and kernel-verified in Lean 4 v4.35.0 against Mathlib v4.35.0
+        (rev 56a005855ea17e0b0958f73ec801ae140b0a1679).
+      prompting_notes: "Author-directed development; all formal proofs checked by the Lean 4 v4.35.0 kernel and #print axioms."
   notes: >-
-    AI assistance was used for search, Lean 4 proof engineering, and drafting; the author reviewed
-    all arguments and verified zero sorry compilation.
+    AI assistance was used for search, Lean 4 proof engineering, and drafting; no independent external
+    human mathematical review of the formalization has occurred, and the author self-assessed all
+    arguments alongside mechanical Lean 4 kernel and comparator checks.
 
 review:
   status: "self-assessed"
   notes: >-
-    Verified locally by the author against Lean 4 v4.37.0-rc1 + Mathlib with zero sorry, zero admit,
-    zero native_decide (staged kernel tables use decide +kernel), and strict Comparator
-    type/axiom checking of Challenge vs Solution across all 23 headline theorems.
+    Verified locally by the author against Lean 4 v4.35.0 + Mathlib v4.35.0 (rev
+    56a005855ea17e0b0958f73ec801ae140b0a1679) with zero sorry, zero admit, zero native_decide
+    (staged kernel tables use decide +kernel), and strict lake comparator type/axiom checking of
+    Challenge vs Solution across all 26 headline theorems (plus 60/65/80-digit Python/mpmath
+    cross-checks). Self-assessed only; no external human mathematical review has been performed.
 
 acknowledgements: >-
   Lean 4 and Mathlib contributors, Paul Sutcliffe, Joseph Malkoun, Jan Eickhoff, Azat Akhtyamov, and H. Tan & Y. Zhang.

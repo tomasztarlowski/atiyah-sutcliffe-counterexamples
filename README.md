@@ -2,11 +2,11 @@
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24443573.svg)](https://doi.org/10.5281/zenodo.24443573)
 
-Machine-checked **Lean 4 (`v4.37.0-rc1` + Mathlib)** counterexamples, continuous homotopies, representation-theoretic No-Go rigidity theorems, and high-precision (`60`–`80` digit `mpmath`) numerical certificates refuting the Atiyah–Sutcliffe conjectures across Euclidean $C_n(\mathbb{R}^3)$, hyperbolic $C_n(\mathbb{H}^3)$, symplectic $\mathrm{Sp}(m)$, and odd-orthogonal $B_m = \mathrm{SO}(2m+1)$ configuration loci, alongside a universal $\mathrm{SU}(2) \times S_m$ spinor No-Go theorem.
+Machine-checked **Lean 4 (`v4.35.0` + Mathlib `v4.35.0`, rev `56a00585`)** counterexamples, continuous homotopies, representation-theoretic No-Go rigidity theorems, and high-precision (`60`–`80` digit `mpmath`) numerical certificates refuting the Atiyah–Sutcliffe conjectures across Euclidean $C_n(\mathbb{R}^3)$, hyperbolic $C_n(\mathbb{H}^3)$, symplectic $\mathrm{Sp}(m)$, and odd-orthogonal $B_m = \mathrm{SO}(2m+1)$ configuration loci, alongside a universal $\mathrm{SU}(2) \times S_m$ spinor No-Go theorem.
 
-- **Preprint manuscript (`Publication / Preprint`, inline PDF preview):** [`paper/atiyah_sutcliffe_counterexamples.tex`](paper/atiyah_sutcliffe_counterexamples.tex) ([compiled PDF](paper/atiyah_sutcliffe_counterexamples.pdf), 21 pages, 9 sections, 4 tables) — Zenodo Preprint DOI: https://doi.org/10.5281/zenodo.24506382 (Concept DOI: https://doi.org/10.5281/zenodo.24506381)
+- **Preprint manuscript (`Publication / Preprint`, inline PDF preview):** [`paper/atiyah_sutcliffe_counterexamples.tex`](paper/atiyah_sutcliffe_counterexamples.tex) ([compiled PDF](paper/atiyah_sutcliffe_counterexamples.pdf), 21 pages, 9 sections, 4 tables; archived Zenodo `v2.0.0` PDF was prepared against an earlier `v4.37.0-rc1` build, while this repository is pinned and verified on `leanprover/lean4:v4.35.0`) — Zenodo Preprint DOI: https://doi.org/10.5281/zenodo.24506382 (Concept DOI: https://doi.org/10.5281/zenodo.24506381)
 - **Zenodo code & data archive:** https://doi.org/10.5281/zenodo.24443573 (Concept DOI — always resolves to the latest release; `v2.0.0`: https://doi.org/10.5281/zenodo.24505697; `v1.1.0`: https://doi.org/10.5281/zenodo.24476029)
-- **Axiom purity & Palomar bridge:** All 8 Lean 4 library modules and `Solution.lean` contain **zero** `sorry`, **zero** `admit`, and **zero** `native_decide` (staged kernel table checks use `decide +kernel`). All **23 headline theorems** exported in `Challenge.lean` / `Solution.lean` / `comparator.json` depend strictly on standard Lean axioms `{propext, Classical.choice, Quot.sound}`.
+- **Axiom purity & Palomar bridge:** All 8 Lean 4 library modules and `Solution.lean` contain **zero** `sorry`, **zero** `admit`, and **zero** `native_decide` (staged kernel table checks use `decide +kernel`). All **26 compared headline theorems** exported in `Challenge.lean` / `Solution.lean` / `comparator.json` depend strictly on standard Lean axioms `{propext, Classical.choice, Quot.sound}` (additional results noted below reside in the imported `Matematyka.AtiyahSutcliffe*` library modules).
 
 ---
 
@@ -21,7 +21,7 @@ Machine-checked **Lean 4 (`v4.37.0-rc1` + Mathlib)** counterexamples, continuous
 | Non-coplanar $\mathbb{R}^3$ | **C1, C2** | **$n = 26$** | Mirror-symmetric ($y \mapsto -y$) integer family `x26Clamp`; certified $26 \times 26$ complex Gaussian elimination (`gaussDetCIv`, $S_{26}=10^{30}$), $D_{26}(8) > 0 > D_{26}(10)$ and IVT $D_{26} = 0$ | `exists_noncoplanar_3d_26_atiyahDet_neg`, `exists_noncoplanar_3d_26_atiyahDet_zero`, `disproof_atiyah_conjecture_1_3d_26`, `disproof_atiyah_sutcliffe_conjecture_2_3d_26` |
 | Non-coplanar $\mathbb{R}^3$ | **C1, C2** | **$n = 36$** | Two coaxial Pythagorean $(33,56,65)$ rings (`x36Clamp`), parity split $36 \to 18 \times 18 \to 6 \times 6$ Schur reduction, `CFpIv` sign reversal $D_{36}(9) > 0 > D_{36}(10)$ ($S_{36}=10^{18}$) | `exists_noncoplanar_3d_36_atiyahDet_neg`, `exists_noncoplanar_3d_36_atiyahDet_zero`, `disproof_atiyah_conjecture_1_3d_36`, `disproof_atiyah_sutcliffe_conjecture_2_3d_36` |
 | Non-coplanar $\mathbb{R}^3$ | **C1, C2** ($0 < |D| < 1$) | **$n = 37, 59$** | Mirror-pair extension $(0, \pm 1, H)$ of $\mathbf{x}^{(35)}$ and $\mathbf{x}^{(57)}$, exact $\sigma_2$ reality & $H \to +\infty$ decoupling | `exists_noncoplanar_37_violating_conjecture_2`, `exists_noncoplanar_37_atiyahDet_zero`, `exists_noncoplanar_59_violating_conjecture_2` |
-| Hyperbolic $\mathbb{H}^2, \mathbb{H}^3$ | **C3** (and $n=3$ 5-gap) | **$n = 5$**, **$n = 3$** | Beltrami–Klein ball $\mathbb{B}^3 \cong \mathbb{H}^3$ limit $\lim_{\varepsilon \to 0^+} D_n^{\mathbb{H}}(\varepsilon \mathbf{x}) = D_n(\mathbf{x})$ (`n=5`); exact 5-gap positivity identity $D_3^{\mathbb{H}} > 1$ at $\{(-3/5,0,0),(3/5,0,0),(0,0,4/5)\}$ | `disproof_hyperbolic_atiyah_sutcliffe_conjecture_3`, `three_point_uniform_gap_identity`, `hyperbolic_three_point_five_gap_gt_one`, `exists_hyperbolic_three_point_det_gt_one` |
+| Hyperbolic $\mathbb{H}^2, \mathbb{H}^3$ | **C3** (and $n=3$ 5-gap) | **$n = 5$**, **$n = 3$** | Beltrami–Klein ball $\mathbb{B}^3 \cong \mathbb{H}^3$ limit $\lim_{\varepsilon \to 0^+} D_n^{\mathbb{H}}(\varepsilon \mathbf{x}) = D_n(\mathbf{x})$ (`n=5` coplanar $\mathbb{H}^2$ & non-coplanar $\mathbb{H}^3$); exact 5-gap positivity identity $D_3^{\mathbb{H}} > 1$ at $\{(-3/5,0,0),(3/5,0,0),(0,0,4/5)\}$ | `exists_five_planar_hyperbolic_violating_conjecture_3`, `exists_five_noncoplanar_hyperbolic_violating_conjecture_3`, `disproof_hyperbolic_atiyah_sutcliffe_conjecture_3`, `three_point_uniform_gap_identity`, `hyperbolic_three_point_five_gap_gt_one`, `exists_hyperbolic_three_point_det_gt_one` |
 | Hyperbolic $\mathbb{H}^2, \mathbb{H}^3$ | **C1, C2** | **$n = 35$ ($\mathbb{H}^2$), $n = 26, 37, 59$ ($\mathbb{H}^3$)** | General permutation $y$-reflection reality (`atiyahDetOfSpinors_im_eq_zero_of_perm_yRefl`) + Klein scaling of `x26Clamp`, `x35Path`, and mirror-pair lifts | `exists_noncoplanar_26_hyperbolic_atiyahDet_zero`, `exists_noncoplanar_26_hyperbolic_violating_conjecture_2`, `exists_planar_35_hyperbolic_violating_conjecture_2`, `exists_noncoplanar_37_hyperbolic_violating_conjecture_2`, `disproof_hyperbolic_atiyah_conjecture_1`, `disproof_hyperbolic_atiyah_sutcliffe_conjecture_2` |
 | Symplectic $\mathrm{Sp}(m)$ | **C1, C2, $D \neq 0$** | **$2m = 40$ ($\mathrm{Sp}(20)$, $\mathbb{R}^2$)** & **$2m = 36$ ($\mathrm{Sp}(18)$, 3D)** | $z$-rotation parity-subblock reduction ($20 \times 20$ / $18 \times 18$ real even subblocks, `S_symp = 10^28`) bypassing quaternionic Study non-negativity $D_{2m} \ge 0$ | `exists_planar_symplectic_20_atiyahDet_zero`, `disproof_symplectic_20_conjecture_1`, `exists_noncoplanar_symplectic_18_atiyahDet_zero`, `disproof_symplectic_18_conjecture_1` |
 | Orthogonal $B_{18} = \mathrm{SO}(37)$ | **C1, C2**, non-origin rank | **$n = 37$** ($1 + 36$ points) | Origin-augmented Pythagorean pairs, $18 \times 18$ odd subblock sign flip (`b18SubMat`), nullvector vanishes at origin index | `exists_noncoplanar_orthogonalB_18_atiyahDet_zero_and_nonOrigin_dep`, `disproof_orthogonalB_18_conjecture_1` |
@@ -48,7 +48,7 @@ Additional archived high-precision (`60`–`65` digit `mpmath`) numerical observ
 │   ├── AtiyahSutcliffePlanar35.lean         # Planar n=35 (S35=10^34), 3D n=37, H^3 n=26/35/37
 │   ├── AtiyahSutcliffeSymplectic.lean       # Sp(20) (N=40), Sp(18) (N=36), B_18=SO(37) (N=37)
 │   └── AtiyahSutcliffeNoGo.lean             # SU(2)xS_m rigidity, weighted No-Go, H^3 n=3 5-gap D_3>1
-├── Challenge.lean                           # Lightweight Palomar/Comparator specification (23 theorems)
+├── Challenge.lean                           # Lightweight Palomar/Comparator specification (26 theorems)
 ├── Solution.lean                            # Zero-sorry proof bridge importing Matematyka.AtiyahSutcliffe*
 ├── comparator.json                          # Axiom and theorem checklist for Challenge vs Solution
 ├── formalization.yaml                       # Formalization metadata
@@ -64,7 +64,7 @@ Additional archived high-precision (`60`–`65` digit `mpmath`) numerical observ
 │   ├── atiyah_small_n_witnesses.json        # Integer witnesses with D_n < 0 for n = 26..34
 │   ├── atiyah_n26_lean_base.json            # Base points and endpoints of the n=26 Lean family
 │   └── atiyah_part2_witnesses.json          # Planar n=35 & symplectic Sp(20)/Sp(18)/B_18 JSON witnesses
-├── lean-toolchain                           # leanprover/lean:v4.37.0-rc1
+├── lean-toolchain                           # leanprover/lean:v4.35.0
 ├── lakefile.toml
 ├── lake-manifest.json
 └── LICENSE                                  # Apache-2.0
@@ -76,7 +76,7 @@ Additional archived high-precision (`60`–`65` digit `mpmath`) numerical observ
 
 ### 1. Verify all Lean 4 proofs
 
-Requires [elan / Lean 4](https://leanprover.github.io/) matching `lean-toolchain` (`leanprover/lean:v4.37.0-rc1`):
+Requires [elan / Lean 4](https://leanprover.github.io/) matching `lean-toolchain` (`leanprover/lean:v4.35.0`, Mathlib `v4.35.0` rev `56a005855ea17e0b0958f73ec801ae140b0a1679`):
 
 ```bash
 lake exe cache get
@@ -112,7 +112,7 @@ python3 scripts/scan_atiyah_sutcliffe.py --certify-n36
 ## Author & AI Disclosure
 
 - **Author:** Tomasz Tarłowski (`tomasztarlowski`)
-- **AI Assistance Disclosure:** Witness discovery, Lean 4 proof engineering, and manuscript preparation were carried out in a human–AI collaborative workflow using Gemini, Claude, and OpenAI Codex models. All formal proofs were independently verified by the Lean 4 kernel (`propext`, `Classical.choice`, `Quot.sound` only), and all numerical values were independently checked in 60–80 digit `mpmath`.
+- **AI Assistance & Review Disclosure:** Witness discovery, Lean 4 proof engineering, informal script/text checks, and manuscript preparation were carried out in a human–AI collaborative workflow using Gemini, Claude, and OpenAI Codex models. All formal proofs were mechanically verified by the Lean 4 `v4.35.0` kernel (`propext`, `Classical.choice`, `Quot.sound` only) and `lake comparator` across all 26 compared theorems, and numerical values were cross-checked in 60–80 digit `mpmath`; review status is self-assessed by the author (`formalization.yaml`), with no external human mathematical peer review of the formalization conducted prior to registration.
 
 ## License
 

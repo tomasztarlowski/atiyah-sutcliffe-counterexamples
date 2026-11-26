@@ -8,13 +8,16 @@ public import Mathlib
 This lightweight Challenge module declares the Euclidean (`C_n(ℝ³)`), hyperbolic (`C_n(ℍ³)` via
 the Beltrami–Klein ball `B³`), symplectic (`Sp(m)`), and orthogonal (`B_m = SO(2m+1)`)
 Atiyah–Sutcliffe normalized determinants, conjectures (C1, C2, C3), $\mathrm{SU}(2) \times S_m$
-holomorphic spinor rigidity / No-Go formulations, and 23 headline theorems covering:
-- Euclidean & hyperbolic C3 refutations at `n = 5` (planar C3 failure first announced by Tan–Zhang, Oct 2026);
-- Planar (`n = 35, 57, 63`) and strictly non-coplanar 3D (`n = 26, 36, 37, 59`) refutations of C1 and C2;
-- Hyperbolic (`ℍ²` & `ℍ³`) refutations down to non-coplanar `n = 26`, plus the `n = 3` 5-gap positivity `D_3^ℍ > 1`;
-- Symplectic `Sp(18)` (`2m = 36`) and orthogonal `B_{18} = SO(37)` (`n = 37`) C1 refutations;
+holomorphic spinor rigidity / No-Go formulations, and 26 compared headline theorems covering:
+- Euclidean (`ℝ²` coplanar) & hyperbolic (`ℍ²` coplanar and `ℍ³` non-coplanar) C3 refutations at `n = 5` (planar C3 failure first announced by Tan–Zhang, Oct 2026);
+- Planar (`n = 35`) and strictly non-coplanar 3D (`n = 26, 36, 37, 59`) refutations of C1 and C2;
+- Hyperbolic (`ℍ³`) C1 and C2 refutations down to strictly non-coplanar `n = 26`, plus the `n = 3` witness `D_3^ℍ > 1`;
+- Symplectic `Sp(18)` (`2m = 36`, strictly non-coplanar 3D) and orthogonal `B_{18} = SO(37)` (`n = 37`) C1 refutations;
 - Universal $\mathrm{SU}(2) \times S_m$ multilinear spinor rigidity and weighted multi-body No-Go (`n = 26`).
 
+Additional results mentioned in the companion paper (such as Euclidean planar `n = 57, 63`,
+hyperbolic planar `n = 35`, hyperbolic `n = 37`, planar symplectic `Sp(20)`, and `B_{18}` non-origin
+linear dependence) are formalized in the imported `Matematyka.AtiyahSutcliffe*` library modules.
 Proofs are supplied in `Solution.lean` and audited using strictly `{propext, Quot.sound, Classical.choice}`.
 -/
 
@@ -225,13 +228,13 @@ noncomputable def weightedSpinorCandidate {m : ℕ} {ι : Type*} [Fintype ι]
   ∑ α : ι, Polynomial.C (W α x i) *
     Φ α (fun r : Fin m => canonicalSpinor (unitDir (x.1 i) (x.1 (i.succAbove r))))
 
-/-- Disproof of Euclidean Atiyah–Sutcliffe Conjecture 3 at sharp minimal `n = 5`. -/
+/-- Disproof of Euclidean Atiyah–Sutcliffe Conjecture 3 (witnessed at `n = 5` by `exists_five_planar_points_violating_conjecture_3`). -/
 theorem disproof_atiyah_sutcliffe_conjecture_3 : ¬ AtiyahSutcliffeConjecture3Prop := by
   sorry
 
-/-- Explicit 5-point witness violating Euclidean Conjecture 3 (`|D₅|³ < ∏ |D₄|`). -/
+/-- Coplanar 5-point Euclidean witness violating Conjecture 3 (`|D₅|³ < ∏ |D₄|`). -/
 theorem exists_five_planar_points_violating_conjecture_3 :
-    ∃ x : DistinctPoints 5,
+    ∃ x : DistinctPoints 5, IsCoplanar x ∧
       ‖atiyahDet x‖ ^ (5 - 2) < ∏ k : Fin 5, ‖atiyahDet (deletePoint x k)‖ := by
   sorry
 
@@ -283,9 +286,23 @@ theorem exists_noncoplanar_37_violating_conjecture_2 :
       (atiyahDet x).im = 0 ∧ (atiyahDet x).re < 0 ∧ ‖atiyahDet x‖ < 1 := by
   sorry
 
-/-- Disproof of Hyperbolic Atiyah–Sutcliffe Conjecture 3 in `ℍ²` and `ℍ³` at `n = 5`. -/
+/-- Disproof of Hyperbolic Atiyah–Sutcliffe Conjecture 3 in `ℍ³` (witnessed at `n = 5` in `ℍ²` and `ℍ³` by the two declarations below). -/
 theorem disproof_hyperbolic_atiyah_sutcliffe_conjecture_3 :
     ¬ HyperbolicAtiyahSutcliffeConjecture3Prop := by
+  sorry
+
+/-- Coplanar 5-point witness in a hyperbolic plane `ℍ² ⊂ ℍ³` violating Hyperbolic Conjecture 3. -/
+theorem exists_five_planar_hyperbolic_violating_conjecture_3 :
+    ∃ q : KleinBallPoints 5, IsHyperbolicCoplanar q ∧
+      ‖hyperbolicAtiyahDet q‖ ^ (5 - 2) <
+        ∏ k : Fin 5, ‖hyperbolicAtiyahDet (deleteKleinPoint q k)‖ := by
+  sorry
+
+/-- Strictly non-coplanar 5-point witness in `ℍ³` violating Hyperbolic Conjecture 3. -/
+theorem exists_five_noncoplanar_hyperbolic_violating_conjecture_3 :
+    ∃ q : KleinBallPoints 5, ¬ IsHyperbolicCoplanar q ∧
+      ‖hyperbolicAtiyahDet q‖ ^ (5 - 2) <
+        ∏ k : Fin 5, ‖hyperbolicAtiyahDet (deleteKleinPoint q k)‖ := by
   sorry
 
 /-- Disproof of Hyperbolic Atiyah Conjecture 1 (determinant form) in `ℍ³`. -/
@@ -319,7 +336,13 @@ theorem exists_noncoplanar_26_hyperbolic_violating_conjecture_2 :
       (hyperbolicAtiyahDet q).im = 0 ∧ (hyperbolicAtiyahDet q).re < 0 ∧ ‖hyperbolicAtiyahDet q‖ < 1 := by
   sorry
 
-/-- Disproof of Symplectic Atiyah Conjecture 1 at `Sp(18)` (`2m = 36`, strictly non-coplanar 3D). -/
+/-- Strictly non-coplanar 3D centrally symmetric `Sp(18)` (`2m = 36`) singular configuration (`D_36 = 0`). -/
+theorem exists_noncoplanar_symplectic_18_atiyahDet_zero :
+    ∃ c : SymplecticConfig 18, Noncoplanar3D c.p ∧
+      atiyahDet ⟨c.p, c.distinct⟩ = 0 := by
+  sorry
+
+/-- Disproof of Symplectic Atiyah Conjecture 1 at `Sp(18)` (`2m = 36`; strictly non-coplanar 3D singular witness established in `exists_noncoplanar_symplectic_18_atiyahDet_zero`). -/
 theorem disproof_symplectic_18_conjecture_1 : ¬ SymplecticAtiyahConjecture1Prop 18 := by
   sorry
 

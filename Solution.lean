@@ -12,7 +12,7 @@ public import Matematyka.AtiyahSutcliffeNoGo
 /-!
 # Solution: Counterexamples & Holomorphic No-Go Rigidity for the Atiyah–Sutcliffe Conjectures
 
-Supplies kernel-verified proofs for all 23 theorems declared in `Challenge.lean` and audited in
+Supplies kernel-verified proofs for all 26 theorems declared in `Challenge.lean` and audited in
 `comparator.json`, bridging `namespace Challenge` definitions directly to
 `Matematyka.AtiyahSutcliffe*`.
 -/
@@ -224,15 +224,18 @@ noncomputable def weightedSpinorCandidate {m : ℕ} {ι : Type*} [Fintype ι]
   ∑ α : ι, Polynomial.C (W α x i) *
     Φ α (fun r : Fin m => canonicalSpinor (unitDir (x.1 i) (x.1 (i.succAbove r))))
 
-/-- Disproof of Euclidean Atiyah–Sutcliffe Conjecture 3 at sharp minimal `n = 5`. -/
+/-- Disproof of Euclidean Atiyah–Sutcliffe Conjecture 3 (witnessed at `n = 5` by `exists_five_planar_points_violating_conjecture_3`). -/
 theorem disproof_atiyah_sutcliffe_conjecture_3 : ¬ AtiyahSutcliffeConjecture3Prop :=
   Matematyka.AtiyahSutcliffe.disproof_atiyah_sutcliffe_conjecture_3
 
-/-- Explicit 5-point witness violating Euclidean Conjecture 3 (`|D₅|³ < ∏ |D₄|`). -/
+/-- Coplanar 5-point Euclidean witness violating Conjecture 3 (`|D₅|³ < ∏ |D₄|`). -/
 theorem exists_five_planar_points_violating_conjecture_3 :
-    ∃ x : DistinctPoints 5,
+    ∃ x : DistinctPoints 5, IsCoplanar x ∧
       ‖atiyahDet x‖ ^ (5 - 2) < ∏ k : Fin 5, ‖atiyahDet (deletePoint x k)‖ :=
-  Matematyka.AtiyahSutcliffe.exists_five_planar_points_violating_conjecture_3
+  ⟨Matematyka.AtiyahSutcliffe.x5,
+    ⟨![0, 1, 0], 0, Or.inr (Or.inl one_ne_zero),
+      fun i => by simp [Matematyka.AtiyahSutcliffe.x5, Matematyka.AtiyahSutcliffe.planarPath]⟩,
+    Matematyka.AtiyahSutcliffe.x5_violates_conjecture_3⟩
 
 /-- Disproof of Euclidean Atiyah Conjecture 1 (determinant non-vanishing form). -/
 theorem disproof_atiyah_det_nonzero : ¬ AtiyahDetNonzeroProp :=
@@ -282,10 +285,24 @@ theorem exists_noncoplanar_37_violating_conjecture_2 :
       (atiyahDet x).im = 0 ∧ (atiyahDet x).re < 0 ∧ ‖atiyahDet x‖ < 1 :=
   Matematyka.AtiyahSutcliffePlanar35.exists_noncoplanar_37_violating_conjecture_2
 
-/-- Disproof of Hyperbolic Atiyah–Sutcliffe Conjecture 3 in `ℍ²` and `ℍ³` at `n = 5`. -/
+/-- Disproof of Hyperbolic Atiyah–Sutcliffe Conjecture 3 in `ℍ³` (witnessed at `n = 5` in `ℍ²` and `ℍ³` by the two declarations below). -/
 theorem disproof_hyperbolic_atiyah_sutcliffe_conjecture_3 :
     ¬ HyperbolicAtiyahSutcliffeConjecture3Prop :=
   Matematyka.AtiyahSutcliffe.disproof_hyperbolic_atiyah_sutcliffe_conjecture_3
+
+/-- Coplanar 5-point witness in a hyperbolic plane `ℍ² ⊂ ℍ³` violating Hyperbolic Conjecture 3. -/
+theorem exists_five_planar_hyperbolic_violating_conjecture_3 :
+    ∃ q : KleinBallPoints 5, IsHyperbolicCoplanar q ∧
+      ‖hyperbolicAtiyahDet q‖ ^ (5 - 2) <
+        ∏ k : Fin 5, ‖hyperbolicAtiyahDet (deleteKleinPoint q k)‖ :=
+  Matematyka.AtiyahSutcliffe.exists_five_planar_hyperbolic_violating_conjecture_3
+
+/-- Strictly non-coplanar 5-point witness in `ℍ³` violating Hyperbolic Conjecture 3. -/
+theorem exists_five_noncoplanar_hyperbolic_violating_conjecture_3 :
+    ∃ q : KleinBallPoints 5, ¬ IsHyperbolicCoplanar q ∧
+      ‖hyperbolicAtiyahDet q‖ ^ (5 - 2) <
+        ∏ k : Fin 5, ‖hyperbolicAtiyahDet (deleteKleinPoint q k)‖ :=
+  Matematyka.AtiyahSutcliffe.exists_five_noncoplanar_hyperbolic_violating_conjecture_3
 
 /-- Disproof of Hyperbolic Atiyah Conjecture 1 (determinant form) in `ℍ³`. -/
 theorem disproof_hyperbolic_atiyah_det_nonzero : ¬ HyperbolicAtiyahDetNonzeroProp :=
@@ -318,7 +335,14 @@ theorem exists_noncoplanar_26_hyperbolic_violating_conjecture_2 :
       (hyperbolicAtiyahDet q).im = 0 ∧ (hyperbolicAtiyahDet q).re < 0 ∧ ‖hyperbolicAtiyahDet q‖ < 1 :=
   Matematyka.AtiyahSutcliffePlanar35.exists_noncoplanar_26_hyperbolic_violating_conjecture_2
 
-/-- Disproof of Symplectic Atiyah Conjecture 1 at `Sp(18)` (`2m = 36`, strictly non-coplanar 3D). -/
+/-- Strictly non-coplanar 3D centrally symmetric `Sp(18)` (`2m = 36`) singular configuration (`D_36 = 0`). -/
+theorem exists_noncoplanar_symplectic_18_atiyahDet_zero :
+    ∃ c : SymplecticConfig 18, Noncoplanar3D c.p ∧
+      atiyahDet ⟨c.p, c.distinct⟩ = 0 := by
+  obtain ⟨c, hnc, h0⟩ := Matematyka.AtiyahSutcliffeSymplectic.exists_noncoplanar_symplectic_18_atiyahDet_zero
+  exact ⟨⟨c.p, c.distinct, c.antipodal, c.involutive, c.neg_eq⟩, hnc, h0⟩
+
+/-- Disproof of Symplectic Atiyah Conjecture 1 at `Sp(18)` (`2m = 36`; strictly non-coplanar 3D singular witness established in `exists_noncoplanar_symplectic_18_atiyahDet_zero`). -/
 theorem disproof_symplectic_18_conjecture_1 : ¬ SymplecticAtiyahConjecture1Prop 18 :=
   fun h => Matematyka.AtiyahSutcliffeSymplectic.disproof_symplectic_18_conjecture_1
     (fun c => h ⟨c.p, c.distinct, c.antipodal, c.involutive, c.neg_eq⟩)
